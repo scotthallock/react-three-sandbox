@@ -2,7 +2,11 @@
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
-    extend: {},
+    extend: {
+      aspectRatio: {
+        '1.91/1': '1.91 / 1',
+      },
+    },
   },
   plugins: [],
 };

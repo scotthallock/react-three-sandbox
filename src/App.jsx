@@ -1,27 +1,50 @@
-import * as THREE from 'three';
 import { useState, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Text } from '@react-three/drei';
+import { Center, OrbitControls, Text, Text3D } from '@react-three/drei';
 
 function App() {
-  const ref = useRef();
-
   return (
     <>
-      <h1 className="text-3xl font-bold">React Three Sandbox</h1>
-      <div id="canvas-container" className="border">
-        <Canvas>
+      <h1 className="text-2xl text-center font-bold select-none">
+        React Three Sandbox
+      </h1>
+      <div
+        id="canvas-container"
+        className="border border-red-500 aspect-[1.91/1]"
+      >
+        <Canvas camera={{ fov: 75, near: 0.1, far: 1000, position: [0, 0, 5] }}>
           <ambientLight intensity={0.5} />
           <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
           <pointLight position={[-10, -10, -10]} />
 
-          <Box position={[1, 1, 1]} />
+          <Box position={[1.6, 1, 0]} />
 
-          <Word position={[0, 1, 2]}>hello.</Word>
+          <Word position={[0, 1, 0]}>hello.</Word>
+
+          <Center>
+            <Text3D
+              font="./src/assets/Inter_Regular.json"
+              size={0.75}
+              height={0.2}
+              curveSegments={12}
+              bevelEnabled
+              bevelThickness={0.02}
+              bevelSize={0.02}
+              bevelOffset={0}
+              bevelSegments={5}
+            >
+              Hello
+              <meshNormalMaterial />
+            </Text3D>
+          </Center>
 
           <OrbitControls />
         </Canvas>
       </div>
+      <button className="bg-slate-700" onClick={() => console.log('clicked')}>
+        Click me
+      </button>
+      <input type="color" />
     </>
   );
 }
@@ -43,8 +66,7 @@ function Box(props) {
       onPointerOver={() => setHovered(true)}
       onPointerOut={() => setHovered(false)}
     >
-      <boxGeometry args={[1, 1, 1]} />
-
+      <boxGeometry args={[0.5, 0.5, 0.5]} />
       <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
     </mesh>
   );
@@ -52,7 +74,7 @@ function Box(props) {
 
 function Word({ children, ...props }) {
   const fontProps = {
-    // font: '../public/Inter_Medium_Regular.json',
+    font: './src/assets/Inter_Regular.json',
     fontSize: 2.5,
   };
 
@@ -60,7 +82,7 @@ function Word({ children, ...props }) {
 
   return (
     <Text
-      color={'black'}
+      color="darkslategray"
       children={children}
       {...props}
       {...fontProps}
