@@ -1,15 +1,7 @@
 import * as THREE from 'three';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import {
-  Center,
-  OrbitControls,
-  Text,
-  Text3D,
-  Stats,
-  PivotControls,
-} from '@react-three/drei';
-
+import { Center, OrbitControls, Text, Text3D } from '@react-three/drei';
 import ObjectControlTable from './components/ObjectControlTable';
 
 const initialObjects = {
@@ -27,17 +19,43 @@ const initialObjects = {
     iden: 1,
     geometry: 'Text3D',
     text: 'hello',
-    material: 'basic',
-    color: '#ff0000',
-    position: [1, 1, 1],
+    material: 'phong',
+    color: '#00ffff',
+    position: [-1.4, 1.4, 0],
     rotation: [-10, 10, 5],
     scale: 2,
   },
 };
 
+const boxTemplate = {
+  iden: null,
+  geometry: 'Box',
+  args: [1, 1, 1],
+  text: 'hello',
+  material: 'phong',
+  color: '#00ffff',
+  position: [-1.4, 1.4, 0],
+  rotation: [-10, 10, 5],
+  scale: 2,
+};
+
 function App() {
   const [objects, setObjects] = useState(initialObjects);
   const [nextId, setNextId] = useState(2); // needs to be changed
+
+  const addObject = (type, ...otherparams) => {
+    if (type !== 'box') {
+      console.log('Can only create a box rn');
+      return;
+    }
+    console.log('Creating a new box');
+    const newObjects = structuredClone(objects);
+    const box = structuredClone(boxTemplate);
+    box.iden = nextId;
+    newObjects[nextId] = box;
+    setObjects(newObjects);
+    setNextId(nextId + 1);
+  };
 
   const deleteObject = (id) => {
     const newObjects = structuredClone(objects);
@@ -49,8 +67,10 @@ function App() {
     const newObjects = structuredClone(objects);
     const duplicate = structuredClone(newObjects[id]);
     duplicate.iden = nextId;
+    // Offset the duplicate item so you can see it
+    duplicate.position[0] += 0.5;
+    duplicate.position[2] += 0.5;
     newObjects[nextId] = duplicate;
-    console.log('created a new object with id', nextId);
     setObjects(newObjects);
     setNextId(nextId + 1);
   };
@@ -107,17 +127,25 @@ function App() {
         >
           <Lights />
 
-          {Object.values(objects).map((state) => {
-            if (state.geometry === 'Text3D') {
-              return <Centered3DText key={state.iden} {...state} />;
+          {Object.values(objects).map((obj) => {
+            if (obj.geometry === 'Text3D') {
+              return <Centered3DText key={obj.iden} {...obj} />;
+            } else if (obj.geometry === 'Box') {
+              return <BoxObject key={obj.iden} {...obj} />;
             }
             return null;
           })}
+
+          {/* <mesh>
+            <boxGeometry args={[1, 1, 1]} />
+            <meshNormalMaterial />
+          </mesh> */}
 
           <gridHelper />
           <OrbitControls makeDefault enableDamping={false} />
         </Canvas>
       </div>
+
       <ObjectControlTable
         objects={objects}
         changeText={changeText}
@@ -126,6 +154,7 @@ function App() {
         changeScale={changeScale}
         changePosition={changePosition}
         changeRotation={changeRotation}
+        addObject={addObject}
         deleteObject={deleteObject}
         duplicateObject={duplicateObject}
       />
@@ -143,8 +172,19 @@ function Lights() {
   );
 }
 
+function BoxObject(props) {
+  return (
+    <mesh>
+      <boxGeometry {...props} />
+      <meshNormalMaterial />
+    </mesh>
+  );
+}
+
 function Centered3DText(props) {
   const { iden, rotation, material, color, text } = props;
+
+  console.log('rendering', iden);
 
   let threeMaterial;
   switch (material) {
@@ -158,7 +198,7 @@ function Centered3DText(props) {
       threeMaterial = new THREE.MeshPhongMaterial({ color });
       break;
     default:
-      console.log('bruh');
+      threeMaterial = new THREE.MeshNormalMaterial();
   }
 
   return (
@@ -177,29 +217,6 @@ function Centered3DText(props) {
     >
       {text}
     </Text3D>
-  );
-}
-
-function Box(props) {
-  const ref = useRef();
-
-  const [hovered, setHovered] = useState(false);
-  const [clicked, setClicked] = useState(false);
-
-  useFrame((state, delta) => (ref.current.rotation.x += delta));
-
-  return (
-    <mesh
-      {...props}
-      ref={ref}
-      scale={clicked ? 1.5 : 1}
-      onClick={() => setClicked(!clicked)}
-      onPointerOver={() => setHovered(true)}
-      onPointerOut={() => setHovered(false)}
-    >
-      <boxGeometry args={[0.5, 0.5, 0.5]} />
-      <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
-    </mesh>
   );
 }
 

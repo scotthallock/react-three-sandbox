@@ -1,5 +1,3 @@
-import { useState, useRef, useEffect } from 'react';
-
 function Text3DControl(props) {
   const {
     iden,
@@ -21,7 +19,7 @@ function Text3DControl(props) {
 
   return (
     <tr>
-      <td className="sticky left-0 whitespace-nowrap bg-white pl-2 py-2">
+      <td className="sticky left-0 whitespace-nowrap px-4 py-2 bg-gray-50">
         <div className="flex gap-2 items-center">
           <button className="fill-red-500" onClick={() => deleteObject(iden)}>
             <svg
@@ -46,10 +44,6 @@ function Text3DControl(props) {
               <path d="M120 975V312h60v603h474v60H120Zm120-120V175h560v680H240Zm60-60h440V235H300v560Zm0 0V235v560Z" />
             </svg>
           </button>
-        </div>
-      </td>
-      <td className="sticky left-0 whitespace-nowrap bg-white px-4 py-2">
-        <div className="flex gap-2 items-center">
           <span className="text-sm uppercase font-bold text-gray-900">
             3D Text
           </span>
@@ -124,7 +118,7 @@ function Text3DControl(props) {
             min="-10"
             max="10"
             step="0.1"
-            value={[position[2]]}
+            value={position[2]}
             onChange={(e) => changePosition(iden, 'z', e.target.value)}
           />
         </div>
@@ -135,7 +129,7 @@ function Text3DControl(props) {
             className="font-mono border border-gray-600 pl-2 h-6 w-16"
             type="number"
             step="5"
-            value={rotation[0] + ''}
+            value={rotation[0]}
             onChange={(e) => changeRotation(iden, 'x', e.target.value)}
           />
           <input
