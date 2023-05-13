@@ -1,3 +1,5 @@
+import { AXIS, MATERIAL } from '../types';
+
 function Text3DControl(props) {
   const {
     iden,
@@ -66,12 +68,12 @@ function Text3DControl(props) {
             value={material}
             onChange={(e) => changeMaterial(iden, e.target.value)}
           >
-            <option value="normal">Normal</option>
-            <option value="basic">Basic</option>
-            <option value="phong">Phong</option>
+            <option value={MATERIAL.NORMAL}>Normal</option>
+            <option value={MATERIAL.PHONG}>Phong</option>
+            <option value={MATERIAL.BASIC}>Basic</option>
           </select>
           {/* The THREE.MeshNormalMaterial does not use a color! */}
-          {material === 'normal' ? null : (
+          {material === MATERIAL.NORMAL ? null : (
             <input
               className="h-6 w-6 border outline-none p-0 appearance-none"
               type="color"
@@ -101,7 +103,7 @@ function Text3DControl(props) {
             max="10"
             step="0.1"
             value={position[0]}
-            onChange={(e) => changePosition(iden, 'x', e.target.value)}
+            onChange={(e) => changePosition(iden, AXIS.X, e.target.value)}
           />
           <input
             className="font-mono border border-gray-600 pl-2 h-6 w-16"
@@ -110,7 +112,7 @@ function Text3DControl(props) {
             max="10"
             step="0.1"
             value={position[1]}
-            onChange={(e) => changePosition(iden, 'y', e.target.value)}
+            onChange={(e) => changePosition(iden, AXIS.Y, e.target.value)}
           />
           <input
             className="font-mono border border-gray-600 pl-2 h-6 w-16"
@@ -119,7 +121,7 @@ function Text3DControl(props) {
             max="10"
             step="0.1"
             value={position[2]}
-            onChange={(e) => changePosition(iden, 'z', e.target.value)}
+            onChange={(e) => changePosition(iden, AXIS.Z, e.target.value)}
           />
         </div>
       </td>
@@ -130,21 +132,21 @@ function Text3DControl(props) {
             type="number"
             step="5"
             value={rotation[0]}
-            onChange={(e) => changeRotation(iden, 'x', e.target.value)}
+            onChange={(e) => changeRotation(iden, AXIS.X, e.target.value)}
           />
           <input
             className="font-mono border border-gray-600 pl-2 h-6 w-16"
             type="number"
             step="5"
             value={rotation[1]}
-            onChange={(e) => changeRotation(iden, 'y', e.target.value)}
+            onChange={(e) => changeRotation(iden, AXIS.Y, e.target.value)}
           />
           <input
             className="font-mono border border-gray-600 pl-2 h-6 w-16"
             type="number"
             step="5"
             value={rotation[2]}
-            onChange={(e) => changeRotation(iden, 'z', e.target.value)}
+            onChange={(e) => changeRotation(iden, AXIS.Z, e.target.value)}
           />
         </div>
       </td>

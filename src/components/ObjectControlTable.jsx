@@ -2,6 +2,8 @@ import Text3DControl from './Text3DControl';
 import ObjectControlHeaders from './ObjectControlHeaders';
 import ObjectCreator from './ObjectCreator';
 
+import { OBJECT } from '../types';
+
 const ObjectControlTable = (props) => {
   const {
     objects,
@@ -17,7 +19,7 @@ const ObjectControlTable = (props) => {
   } = props;
 
   const tableRows = Object.values(objects).map((state) => {
-    if (state.geometry === 'Text3D') {
+    if (state.geometry === OBJECT.TEXT3D) {
       return (
         <Text3DControl
           key={state.iden}

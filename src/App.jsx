@@ -4,23 +4,27 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { Center, OrbitControls, Text, Text3D } from '@react-three/drei';
 import ObjectControlTable from './components/ObjectControlTable';
 
+import { AXIS, OBJECT, MATERIAL } from './types';
+
 const initialObjects = {
   0: {
     iden: 0,
-    geometry: 'Text3D',
-    text: 'sup',
-    material: 'normal',
+    geometry: OBJECT.TEXT3D,
+    material: MATERIAL.NORMAL,
     color: '#00ff00',
+    text: 'sup',
+    args: [],
     position: [0, 0, 0],
     rotation: [0, 0, 0],
     scale: 1,
   },
   1: {
     iden: 1,
-    geometry: 'Text3D',
-    text: 'hello',
-    material: 'phong',
+    geometry: OBJECT.TEXT3D,
+    material: MATERIAL.PHONG,
     color: '#00ffff',
+    text: 'hello',
+    args: [],
     position: [-1.4, 1.4, 0],
     rotation: [-10, 10, 5],
     scale: 2,
@@ -29,11 +33,11 @@ const initialObjects = {
 
 const boxTemplate = {
   iden: null,
-  geometry: 'Box',
-  args: [1, 1, 1],
-  text: 'hello',
-  material: 'phong',
+  geometry: OBJECT.BOX,
+  material: MATERIAL.NORMAL,
   color: '#00ffff',
+  text: 'hello',
+  args: [1, 1, 1],
   position: [-1.4, 1.4, 0],
   rotation: [-10, 10, 5],
   scale: 2,
@@ -67,9 +71,9 @@ function App() {
     const newObjects = structuredClone(objects);
     const duplicate = structuredClone(newObjects[id]);
     duplicate.iden = nextId;
-    // Offset the duplicate item so you can see it
-    duplicate.position[0] += 0.5;
-    duplicate.position[2] += 0.5;
+    // Offset the duplicated item so you can see it
+    duplicate.position[AXIS.X] += 0.5;
+    duplicate.position[AXIS.Z] += 0.5;
     newObjects[nextId] = duplicate;
     setObjects(newObjects);
     setNextId(nextId + 1);
@@ -95,17 +99,13 @@ function App() {
 
   const changePosition = (id, axis, value) => {
     const newObjects = structuredClone(objects);
-    if (axis === 'x') newObjects[id].position[0] = value;
-    else if (axis === 'y') newObjects[id].position[1] = value;
-    else if (axis === 'z') newObjects[id].position[2] = value;
+    newObjects[id].position[axis] = value;
     setObjects(newObjects);
   };
 
   const changeRotation = (id, axis, degrees) => {
     const newObjects = structuredClone(objects);
-    if (axis === 'x') newObjects[id].rotation[0] = degrees % 360;
-    else if (axis === 'y') newObjects[id].rotation[1] = degrees % 360;
-    else if (axis === 'z') newObjects[id].rotation[2] = degrees % 360;
+    newObjects[id].rotation[axis] = degrees % 360;
     setObjects(newObjects);
   };
 
@@ -117,7 +117,7 @@ function App() {
 
   return (
     <>
-      <h1 className="text-2xl font-bold select-none font-medium uppercase text-gray-200 mt-4 ml-4">
+      <h1 className="text-xl select-none font-medium uppercase text-gray-200 mt-4 ml-4">
         React Three Sandbox
       </h1>
       <div id="canvas-container" className="aspect-[1.91/1] m-4 shadow-lg">
@@ -128,18 +128,15 @@ function App() {
           <Lights />
 
           {Object.values(objects).map((obj) => {
-            if (obj.geometry === 'Text3D') {
-              return <Centered3DText key={obj.iden} {...obj} />;
-            } else if (obj.geometry === 'Box') {
-              return <BoxObject key={obj.iden} {...obj} />;
+            switch (obj.geometry) {
+              case OBJECT.TEXT3D:
+                return <Centered3DText key={obj.iden} {...obj} />;
+              case OBJECT.BOX:
+                return <BoxObject key={obj.iden} {...obj} />;
+              default:
+                return null;
             }
-            return null;
           })}
-
-          {/* <mesh>
-            <boxGeometry args={[1, 1, 1]} />
-            <meshNormalMaterial />
-          </mesh> */}
 
           <gridHelper />
           <OrbitControls makeDefault enableDamping={false} />
@@ -173,10 +170,22 @@ function Lights() {
 }
 
 function BoxObject(props) {
+  let { material, color } = props;
+  let threeMaterial;
+  switch (material) {
+    case MATERIAL.BASIC:
+      threeMaterial = new THREE.MeshBasicMaterial({ color });
+      break;
+    case MATERIAL.PHONG:
+      threeMaterial = new THREE.MeshPhongMaterial({ color });
+      break;
+    default:
+      threeMaterial = new THREE.MeshNormalMaterial();
+  }
+  console.log(threeMaterial);
   return (
-    <mesh>
+    <mesh material={threeMaterial}>
       <boxGeometry {...props} />
-      <meshNormalMaterial />
     </mesh>
   );
 }
@@ -184,17 +193,12 @@ function BoxObject(props) {
 function Centered3DText(props) {
   const { iden, rotation, material, color, text } = props;
 
-  console.log('rendering', iden);
-
   let threeMaterial;
   switch (material) {
-    case 'normal':
-      threeMaterial = new THREE.MeshNormalMaterial();
-      break;
-    case 'basic':
+    case MATERIAL.BASIC:
       threeMaterial = new THREE.MeshBasicMaterial({ color });
       break;
-    case 'phong':
+    case MATERIAL.PHONG:
       threeMaterial = new THREE.MeshPhongMaterial({ color });
       break;
     default:
