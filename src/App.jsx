@@ -1,15 +1,15 @@
 import * as THREE from 'three';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Center, OrbitControls, Text, Text3D } from '@react-three/drei';
 import ObjectControlTable from './components/ObjectControlTable';
 
-import { AXIS, OBJECT, MATERIAL } from './types';
+import { AXIS, GEOMETRY, MATERIAL } from './types';
 
 const initialObjects = {
   0: {
     iden: 0,
-    geometry: OBJECT.TEXT3D,
+    geometry: GEOMETRY.TEXT3D,
     material: MATERIAL.NORMAL,
     color: '#00ff00',
     text: 'sup',
@@ -20,20 +20,31 @@ const initialObjects = {
   },
   1: {
     iden: 1,
-    geometry: OBJECT.TEXT3D,
-    material: MATERIAL.PHONG,
+    geometry: GEOMETRY.TEXT3D,
+    material: MATERIAL.NORMAL,
     color: '#00ffff',
     text: 'hello',
     args: [],
-    position: [-1.4, 1.4, 0],
-    rotation: [-10, 10, 5],
+    position: [0, 0, 0],
+    rotation: [0, 0, 0],
+    scale: 1,
+  },
+  2: {
+    iden: 2,
+    geometry: GEOMETRY.TEXT2D,
+    material: MATERIAL.BASIC,
+    color: '#ff00ff',
+    text: 'world',
+    args: [],
+    position: [1.4, 1.4, 0],
+    rotation: [0, 10, 5],
     scale: 2,
   },
 };
 
 const boxTemplate = {
   iden: null,
-  geometry: OBJECT.BOX,
+  geometry: GEOMETRY.BOX,
   material: MATERIAL.NORMAL,
   color: '#00ffff',
   text: 'hello',
@@ -45,21 +56,21 @@ const boxTemplate = {
 
 function App() {
   const [objects, setObjects] = useState(initialObjects);
-  const [nextId, setNextId] = useState(2); // needs to be changed
+  const [nextId, setNextId] = useState(3); // needs to be changed
 
-  const addObject = (type, ...otherparams) => {
-    if (type !== 'box') {
-      console.log('Can only create a box rn');
-      return;
-    }
-    console.log('Creating a new box');
-    const newObjects = structuredClone(objects);
-    const box = structuredClone(boxTemplate);
-    box.iden = nextId;
-    newObjects[nextId] = box;
-    setObjects(newObjects);
-    setNextId(nextId + 1);
-  };
+  // const addObject = (type, ...otherparams) => {
+  //   if (type !== 'box') {
+  //     console.log('Can only create a box rn');
+  //     return;
+  //   }
+  //   console.log('Creating a new box');
+  //   const newObjects = structuredClone(objects);
+  //   const box = structuredClone(boxTemplate);
+  //   box.iden = nextId;
+  //   newObjects[nextId] = box;
+  //   setObjects(newObjects);
+  //   setNextId(nextId + 1);
+  // };
 
   const deleteObject = (id) => {
     const newObjects = structuredClone(objects);
@@ -77,6 +88,12 @@ function App() {
     newObjects[nextId] = duplicate;
     setObjects(newObjects);
     setNextId(nextId + 1);
+  };
+
+  const changeGeometry = (id, geometry) => {
+    const newObjects = structuredClone(objects);
+    newObjects[id].geometry = geometry;
+    setObjects(newObjects);
   };
 
   const changeMaterial = (id, material) => {
@@ -99,7 +116,7 @@ function App() {
 
   const changePosition = (id, axis, value) => {
     const newObjects = structuredClone(objects);
-    newObjects[id].position[axis] = value;
+    newObjects[id].position[axis] = Number(value);
     setObjects(newObjects);
   };
 
@@ -121,17 +138,18 @@ function App() {
         React Three Sandbox
       </h1>
       <div id="canvas-container" className="aspect-[1.91/1] m-4 shadow-lg">
-        <Canvas
-          className="bg-white"
-          camera={{ fov: 75, near: 0.1, far: 1000, position: [0, 0, 5] }}
-        >
+        <Canvas>
+          <color attach="background" args={['#fed200']} />
+
           <Lights />
 
           {Object.values(objects).map((obj) => {
             switch (obj.geometry) {
-              case OBJECT.TEXT3D:
-                return <Centered3DText key={obj.iden} {...obj} />;
-              case OBJECT.BOX:
+              case GEOMETRY.TEXT3D:
+                return <Text3DModel key={obj.iden} {...obj} />;
+              case GEOMETRY.TEXT2D:
+                return <Text2DModel key={obj.iden} {...obj} />;
+              case GEOMETRY.BOX:
                 return <BoxObject key={obj.iden} {...obj} />;
               default:
                 return null;
@@ -146,12 +164,13 @@ function App() {
       <ObjectControlTable
         objects={objects}
         changeText={changeText}
+        changeGeometry={changeGeometry}
         changeMaterial={changeMaterial}
         changeColor={changeColor}
         changeScale={changeScale}
         changePosition={changePosition}
         changeRotation={changeRotation}
-        addObject={addObject}
+        // addObject={addObject}
         deleteObject={deleteObject}
         duplicateObject={duplicateObject}
       />
@@ -170,78 +189,104 @@ function Lights() {
 }
 
 function BoxObject(props) {
-  let { material, color } = props;
-  let threeMaterial;
-  switch (material) {
-    case MATERIAL.BASIC:
-      threeMaterial = new THREE.MeshBasicMaterial({ color });
-      break;
-    case MATERIAL.PHONG:
-      threeMaterial = new THREE.MeshPhongMaterial({ color });
-      break;
-    default:
-      threeMaterial = new THREE.MeshNormalMaterial();
-  }
-  console.log(threeMaterial);
+  const { iden, material, color } = props;
+
+  console.log(`### RENDER ${iden} ###`);
+
+  // Very helpful resource:
+  // https://sbcode.net/react-three-fiber/use-memo/
+  // Only create a new material if the `material` or `color` props have changed.
+  // Without useMemo, we would be unnecessarily creating a new instance of
+  // THREE.Material every time we change the position (but not the material).
+
+  const memoMaterial = useMemo(() => {
+    return createThreeMaterial(material, color);
+  }, [material, color]);
+
+  // This code can show us if we are creating a new instance of geometry or
+  // material when this component re-renders. If the uuid is unchanged, we
+  // are re-using the current instance. If the uuid is changed, we are creating
+  // a new instance.
+  const ref = useRef();
+  useEffect(() => {
+    console.log('geometry:', ref.current.geometry.uuid);
+    console.log('material:', ref.current.material.uuid);
+  });
+
   return (
-    <mesh material={threeMaterial}>
-      <boxGeometry {...props} />
+    <mesh ref={ref} {...props} material={memoMaterial}>
+      <boxGeometry />
     </mesh>
   );
 }
 
-function Centered3DText(props) {
-  const { iden, rotation, material, color, text } = props;
+function Text3DModel(props) {
+  const { iden, scale, rotation, material, color, text } = props;
 
-  let threeMaterial;
-  switch (material) {
-    case MATERIAL.BASIC:
-      threeMaterial = new THREE.MeshBasicMaterial({ color });
-      break;
-    case MATERIAL.PHONG:
-      threeMaterial = new THREE.MeshPhongMaterial({ color });
-      break;
-    default:
-      threeMaterial = new THREE.MeshNormalMaterial();
-  }
+  console.log(`### RENDER ${iden} ###`);
+
+  const memoMaterial = useMemo(() => {
+    return createThreeMaterial(material, color);
+  }, [material, color]);
 
   return (
-    <Text3D
-      font="./src/assets/Inter_Regular.json"
-      {...props}
+    <Center
+      scale={scale}
+      position={props.position}
       rotation={rotation.map((degrees) => THREE.MathUtils.degToRad(degrees))}
-      lineHeight={0.7}
-      curveSegments={12}
-      bevelEnabled
-      bevelThickness={0.01}
-      bevelSize={0.01}
-      bevelOffset={0}
-      bevelSegments={5}
-      material={threeMaterial}
+      onCentered={() => {
+        /* Without this, the text would not dynamically re-center*/
+      }}
     >
-      {text}
-    </Text3D>
+      <Text3D
+        font="./src/assets/Inter_Regular.json"
+        lineHeight={0.7}
+        curveSegments={12}
+        bevelEnabled
+        bevelThickness={0.01}
+        bevelSize={0.01}
+        bevelOffset={0}
+        bevelSegments={5}
+        material={memoMaterial}
+      >
+        {text}
+      </Text3D>
+    </Center>
   );
 }
 
-function Word({ children, ...props }) {
-  const fontProps = {
-    font: './src/assets/Inter_Regular.json',
-    fontSize: 2.5,
-  };
+function Text2DModel({ children, ...props }) {
+  const { iden, text, scale, position, rotation, color, material } = props;
 
-  const ref = useRef();
+  console.log(`### RENDER ${iden} ###`);
+
+  const memoMaterial = useMemo(() => {
+    return createThreeMaterial(material, color);
+  }, [material, color]);
 
   return (
     <Text
-      color="darkslategray"
-      children={children}
-      {...props}
-      {...fontProps}
-      ref={ref}
-      onClick={() => console.log('clicked')}
-    ></Text>
+      position={position}
+      rotation={rotation.map((degrees) => THREE.MathUtils.degToRad(degrees))}
+      material={memoMaterial}
+      font="./src/assets/Inter_Regular.json"
+      fontSize={1}
+      scale={scale}
+    >
+      {text}
+    </Text>
   );
+}
+
+function createThreeMaterial(material, color) {
+  console.log('call: createThreeMaterial');
+  if (material === MATERIAL.NORMAL) {
+    return new THREE.MeshNormalMaterial();
+  } else if (material === MATERIAL.PHONG) {
+    return new THREE.MeshPhongMaterial({ color });
+  } else if (material === MATERIAL.BASIC) {
+    return new THREE.MeshBasicMaterial({ color });
+  }
 }
 
 export default App;

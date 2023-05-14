@@ -10,7 +10,7 @@ export const MATERIAL = {
   NORMAL: 'NORMAL',
 };
 
-export const OBJECT = {
+export const GEOMETRY = {
   TEXT3D: 'TEXT3D',
   TEXT2D: 'TEXT2D',
   BOX: 'BOX',

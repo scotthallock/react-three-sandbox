@@ -1,9 +1,10 @@
-import { AXIS, MATERIAL } from '../types';
+import { AXIS, MATERIAL, GEOMETRY } from '../types';
 
 function Text3DControl(props) {
   const {
     iden,
     text,
+    geometry,
     material,
     color,
     position,
@@ -12,6 +13,7 @@ function Text3DControl(props) {
     deleteObject,
     duplicateObject,
     changeText,
+    changeGeometry,
     changeMaterial,
     changeColor,
     changePosition,
@@ -46,9 +48,18 @@ function Text3DControl(props) {
               <path d="M120 975V312h60v603h474v60H120Zm120-120V175h560v680H240Zm60-60h440V235H300v560Zm0 0V235v560Z" />
             </svg>
           </button>
-          <span className="text-sm uppercase font-bold text-gray-900">
-            3D Text
-          </span>
+          <select
+            name="material"
+            className="border border-gray-600 h-6"
+            value={geometry}
+            onChange={(e) => changeGeometry(iden, e.target.value)}
+          >
+            <option value={GEOMETRY.TEXT3D}>TEXT 3D</option>
+            <option value={GEOMETRY.TEXT2D}>TEXT 2D</option>
+            <option value={GEOMETRY.BOX}>BOX</option>
+            <option value={GEOMETRY.SPHERE}>SPHERE</option>
+            <option value={GEOMETRY.CONE}>CONE</option>
+          </select>
         </div>
       </td>
       <td className="whitespace-nowrap px-4 py-2">

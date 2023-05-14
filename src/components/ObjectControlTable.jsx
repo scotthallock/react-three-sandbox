@@ -1,8 +1,5 @@
-import Text3DControl from './Text3DControl';
+import ObjectControlRow from './ObjectControlRow';
 import ObjectControlHeaders from './ObjectControlHeaders';
-import ObjectCreator from './ObjectCreator';
-
-import { OBJECT } from '../types';
 
 const ObjectControlTable = (props) => {
   const {
@@ -13,30 +10,27 @@ const ObjectControlTable = (props) => {
     changeText,
     changeScale,
     changeMaterial,
+    changeGeometry,
     changeColor,
     changePosition,
     changeRotation,
   } = props;
 
-  const tableRows = Object.values(objects).map((state) => {
-    if (state.geometry === OBJECT.TEXT3D) {
-      return (
-        <Text3DControl
-          key={state.iden}
-          {...state}
-          changeText={changeText}
-          changeMaterial={changeMaterial}
-          changeColor={changeColor}
-          changeScale={changeScale}
-          changePosition={changePosition}
-          changeRotation={changeRotation}
-          deleteObject={deleteObject}
-          duplicateObject={duplicateObject}
-        />
-      );
-    }
-    return null;
-  });
+  const tableRows = Object.values(objects).map((state) => (
+    <ObjectControlRow
+      key={state.iden}
+      {...state}
+      changeText={changeText}
+      changeGeometry={changeGeometry}
+      changeMaterial={changeMaterial}
+      changeColor={changeColor}
+      changeScale={changeScale}
+      changePosition={changePosition}
+      changeRotation={changeRotation}
+      deleteObject={deleteObject}
+      duplicateObject={duplicateObject}
+    />
+  ));
 
   return (
     <div className="overflow-x-scroll m-4 shadow-lg">
@@ -44,7 +38,6 @@ const ObjectControlTable = (props) => {
         <ObjectControlHeaders />
         <tbody className="bg-gray-50 divide-y divide-gray-200">
           {tableRows}
-          <ObjectCreator addObject={addObject} />
         </tbody>
       </table>
     </div>
