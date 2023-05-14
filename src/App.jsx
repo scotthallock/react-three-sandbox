@@ -4,7 +4,7 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { Center, OrbitControls, Text, Text3D } from '@react-three/drei';
 import ObjectControlTable from './components/ObjectControlTable';
 
-import { AXIS, GEOMETRY, MATERIAL } from './types';
+import { AXIS, GEOMETRY, MATERIAL, ACTION } from './types';
 
 const initialObjects = {
   0: {
@@ -13,122 +13,99 @@ const initialObjects = {
     material: MATERIAL.NORMAL,
     color: '#00ff00',
     text: 'sup',
-    args: [],
+    args: [1, 1, 1],
+    scale: 1,
     position: [0, 0, 0],
     rotation: [0, 0, 0],
-    scale: 1,
   },
   1: {
     iden: 1,
     geometry: GEOMETRY.TEXT3D,
-    material: MATERIAL.NORMAL,
+    material: MATERIAL.PHONG,
     color: '#00ffff',
     text: 'hello',
-    args: [],
-    position: [0, 0, 0],
-    rotation: [0, 0, 0],
+    args: [1, 1, 1],
     scale: 1,
+    position: [1, 2, 1],
+    rotation: [0, 0, 0],
   },
   2: {
     iden: 2,
-    geometry: GEOMETRY.TEXT2D,
-    material: MATERIAL.BASIC,
+    geometry: GEOMETRY.BOX,
+    material: MATERIAL.PHONG,
     color: '#ff00ff',
     text: 'world',
-    args: [],
+    args: [1, 2, 1],
+    scale: 2,
     position: [1.4, 1.4, 0],
     rotation: [0, 10, 5],
-    scale: 2,
   },
-};
-
-const boxTemplate = {
-  iden: null,
-  geometry: GEOMETRY.BOX,
-  material: MATERIAL.NORMAL,
-  color: '#00ffff',
-  text: 'hello',
-  args: [1, 1, 1],
-  position: [-1.4, 1.4, 0],
-  rotation: [-10, 10, 5],
-  scale: 2,
 };
 
 function App() {
   const [objects, setObjects] = useState(initialObjects);
   const [nextId, setNextId] = useState(3); // needs to be changed
+  const [backgroundColor, setBackgroundColor] = useState('#fed200');
+  const [showGridHelper, setShowGridHelper] = useState(true);
 
-  // const addObject = (type, ...otherparams) => {
-  //   if (type !== 'box') {
-  //     console.log('Can only create a box rn');
-  //     return;
-  //   }
-  //   console.log('Creating a new box');
-  //   const newObjects = structuredClone(objects);
-  //   const box = structuredClone(boxTemplate);
-  //   box.iden = nextId;
-  //   newObjects[nextId] = box;
-  //   setObjects(newObjects);
-  //   setNextId(nextId + 1);
-  // };
-
-  const deleteObject = (id) => {
+  const handleAction = (action, uuid, value, argNo) => {
+    if (!objects[uuid]) throw new Error('uuid invalid');
     const newObjects = structuredClone(objects);
-    delete newObjects[id];
-    setObjects(newObjects);
-  };
+    switch (action) {
+      case ACTION.ADD_OBJECT:
+        console.log('ADD_OBJECT');
+        break;
 
-  const duplicateObject = (id) => {
-    const newObjects = structuredClone(objects);
-    const duplicate = structuredClone(newObjects[id]);
-    duplicate.iden = nextId;
-    // Offset the duplicated item so you can see it
-    duplicate.position[AXIS.X] += 0.5;
-    duplicate.position[AXIS.Z] += 0.5;
-    newObjects[nextId] = duplicate;
-    setObjects(newObjects);
-    setNextId(nextId + 1);
-  };
+      case ACTION.DELETE_OBJECT:
+        delete newObjects[uuid];
+        break;
 
-  const changeGeometry = (id, geometry) => {
-    const newObjects = structuredClone(objects);
-    newObjects[id].geometry = geometry;
-    setObjects(newObjects);
-  };
+      case ACTION.DUPLICATE_OBJECT:
+        const duplicate = structuredClone(newObjects[id]);
+        duplicate.iden = nextId;
+        // Offset the new duplicate object so you see it
+        duplicate.position[AXIS.X] += 0.5;
+        duplicate.position[AXIS.Z] += 0.5;
+        newObjects[nextId] = duplicate;
+        setNextId(nextId + 1);
+        break;
 
-  const changeMaterial = (id, material) => {
-    const newObjects = structuredClone(objects);
-    newObjects[id].material = material;
-    setObjects(newObjects);
-  };
+      case ACTION.CHANGE_GEOMETRY:
+        if (!GEOMETRY[value]) throw new Error('geometry invalid');
+        newObjects[uuid].geometry = value;
+        break;
 
-  const changeColor = (id, color) => {
-    const newObjects = structuredClone(objects);
-    newObjects[id].color = color;
-    setObjects(newObjects);
-  };
+      case ACTION.CHANGE_MATERIAL:
+        if (!MATERIAL[value]) throw new Error('material invalid');
+        newObjects[uuid].material = value;
+        break;
 
-  const changeText = (id, text) => {
-    const newObjects = structuredClone(objects);
-    newObjects[id].text = text;
-    setObjects(newObjects);
-  };
+      case ACTION.CHANGE_COLOR:
+        newObjects[uuid].color = value;
+        break;
 
-  const changePosition = (id, axis, value) => {
-    const newObjects = structuredClone(objects);
-    newObjects[id].position[axis] = Number(value);
-    setObjects(newObjects);
-  };
+      case ACTION.CHANGE_TEXT:
+        newObjects[uuid].text = value;
+        break;
 
-  const changeRotation = (id, axis, degrees) => {
-    const newObjects = structuredClone(objects);
-    newObjects[id].rotation[axis] = degrees % 360;
-    setObjects(newObjects);
-  };
+      case ACTION.CHANGE_ARGS:
+        if (typeof argNo !== 'number') throw new Error('argNo invalid');
+        newObjects[uuid].args[argNo] = value;
+        break;
 
-  const changeScale = (id, value) => {
-    const newObjects = structuredClone(objects);
-    newObjects[id].scale = value;
+      case ACTION.CHANGE_SCALE:
+        newObjects[uuid].scale = value;
+        break;
+
+      case ACTION.CHANGE_POSITION:
+        newObjects[uuid].position[argNo] = value;
+        break;
+
+      case ACTION.CHANGE_ROTATION:
+        // should there be a `rotationDeg` and a `rotationRad` ?
+        newObjects[uuid].rotation[argNo] = value;
+        break;
+    }
     setObjects(newObjects);
   };
 
@@ -139,8 +116,7 @@ function App() {
       </h1>
       <div id="canvas-container" className="aspect-[1.91/1] m-4 shadow-lg">
         <Canvas>
-          <color attach="background" args={['#fed200']} />
-
+          <color attach="background" args={[backgroundColor]} />
           <Lights />
 
           {Object.values(objects).map((obj) => {
@@ -151,28 +127,35 @@ function App() {
                 return <Text2DModel key={obj.iden} {...obj} />;
               case GEOMETRY.BOX:
                 return <BoxObject key={obj.iden} {...obj} />;
+              case GEOMETRY.SPHERE:
+                return <SphereObject key={obj.iden} {...obj} />;
               default:
                 return null;
             }
           })}
 
-          <gridHelper />
+          {showGridHelper ? <gridHelper /> : null}
           <OrbitControls makeDefault enableDamping={false} />
         </Canvas>
       </div>
 
+      <div className="bg-gray-800 m-4 flex gap-4">
+        <input
+          type="color"
+          className="bg-none outline-none border-none"
+          value={backgroundColor}
+          onChange={(e) => setBackgroundColor(e.target.value)}
+        />
+        <input
+          type="checkbox"
+          checked={showGridHelper}
+          onChange={() => setShowGridHelper(!showGridHelper)}
+        />
+      </div>
+
       <ObjectControlTable
         objects={objects}
-        changeText={changeText}
-        changeGeometry={changeGeometry}
-        changeMaterial={changeMaterial}
-        changeColor={changeColor}
-        changeScale={changeScale}
-        changePosition={changePosition}
-        changeRotation={changeRotation}
-        // addObject={addObject}
-        deleteObject={deleteObject}
-        duplicateObject={duplicateObject}
+        handleAction={handleAction} // yea
       />
     </>
   );
@@ -188,16 +171,14 @@ function Lights() {
   );
 }
 
+// Very helpful resource:
+// https://sbcode.net/react-three-fiber/use-memo/
+// Only create a new material if the `material` or `color` props have changed.
+// Without useMemo, we would be unnecessarily creating a new instance of
+// THREE.Material every time we change the position (but not the material).
+
 function BoxObject(props) {
-  const { iden, material, color } = props;
-
-  console.log(`### RENDER ${iden} ###`);
-
-  // Very helpful resource:
-  // https://sbcode.net/react-three-fiber/use-memo/
-  // Only create a new material if the `material` or `color` props have changed.
-  // Without useMemo, we would be unnecessarily creating a new instance of
-  // THREE.Material every time we change the position (but not the material).
+  const { material, color, args, position, rotation } = props;
 
   const memoMaterial = useMemo(() => {
     return createThreeMaterial(material, color);
@@ -208,15 +189,33 @@ function BoxObject(props) {
   // are re-using the current instance. If the uuid is changed, we are creating
   // a new instance.
   const ref = useRef();
-  useEffect(() => {
-    console.log('geometry:', ref.current.geometry.uuid);
-    console.log('material:', ref.current.material.uuid);
-  });
+  // useEffect(() => {
+  //   console.log('geometry:', ref.current.geometry.uuid);
+  //   console.log('material:', ref.current.material.uuid);
+  // });
 
   return (
-    <mesh ref={ref} {...props} material={memoMaterial}>
-      <boxGeometry />
-    </mesh>
+    <Center onCentered={() => {}} position={position} rotation={rotation}>
+      <mesh ref={ref} material={memoMaterial}>
+        <boxGeometry args={args} />
+      </mesh>
+    </Center>
+  );
+}
+
+function SphereObject(props) {
+  const { material, color, args, position, rotation } = props;
+
+  const memoMaterial = useMemo(() => {
+    return createThreeMaterial(material, color);
+  }, [material, color]);
+
+  return (
+    <Center onCentered={() => {}} position={position} rotation={rotation}>
+      <mesh material={memoMaterial}>
+        <sphereGeometry args={args} />
+      </mesh>
+    </Center>
   );
 }
 
@@ -279,13 +278,16 @@ function Text2DModel({ children, ...props }) {
 }
 
 function createThreeMaterial(material, color) {
-  console.log('call: createThreeMaterial');
   if (material === MATERIAL.NORMAL) {
     return new THREE.MeshNormalMaterial();
   } else if (material === MATERIAL.PHONG) {
     return new THREE.MeshPhongMaterial({ color });
   } else if (material === MATERIAL.BASIC) {
     return new THREE.MeshBasicMaterial({ color });
+  } else if (material === MATERIAL.TOON) {
+    return new THREE.MeshToonMaterial({ color });
+  } else if ((material = MATERIAL.STANDARD)) {
+    return new THREE.MeshStandardMaterial({ color });
   }
 }
 
