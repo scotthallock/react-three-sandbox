@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 @layer base {
-  /* Hide arrow buttons on input elements */
+  /* Hide arrow buttons on input-number elements */
   input[type='number']::-webkit-inner-spin-button,
   input[type='number']::-webkit-outer-spin-button {
     -webkit-appearance: none;
@@ -11,5 +11,13 @@
   }
   input[type='number'] {
     -moz-appearance: textfield;
+  }
+
+  /* Remove default styles on input-color elements */
+  input[type='color'] {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    background: none;
   }
 }

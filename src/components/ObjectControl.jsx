@@ -82,6 +82,23 @@ const ObjectControl = () => {
           </div>
         </div>
       </div>
+
+      <div className="flex items-center w-[260px] h-[24px] px-[10px]">
+        <label>color</label>
+        <div className="flex gap-[6px] items-center w-[160px] ml-auto">
+          <div className="h-[24px] w-[24px] bg-red-600 rounded-[3px] flex items-center justify-center overflow-hidden">
+            <input className="h-[36px] w-[36px] shrink-0" type="color" />
+          </div>
+          <div className="flex grow basis-0 min-w-0 items-center bg-gray-700 rounded-[3px]">
+            <input
+              className="h-[24px] min-w-0 text-gray-400 text-right pr-[6px] bg-transparent outline-none"
+              type="text"
+              step="0.1"
+              value="10.5"
+            />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
