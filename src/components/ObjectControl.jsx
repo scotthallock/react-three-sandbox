@@ -4,7 +4,7 @@ const ObjectControl = () => {
       <div className="flex items-center w-[260px] h-[24px] px-[10px]">
         <label>args</label>
         <div className="flex items-center w-[160px] ml-auto bg-gray-700 rounded-[3px]">
-          <span className="w-[12px] text-center select-none text-gray-500 outline outline-1 outline-green-400">
+          <span className="w-[12px] text-center select-none text-gray-500">
             x
           </span>
           <input
@@ -20,21 +20,65 @@ const ObjectControl = () => {
         <label>args</label>
         <div className="flex gap-[6px] items-center w-[160px] ml-auto">
           <div className="flex grow basis-0 min-w-0 items-center bg-gray-700 rounded-[3px]">
-            <span className="w-[12px] text-center select-none text-gray-500 ">
+            <span className="w-[12px] shrink-0 text-center select-none text-gray-500 ">
               x
             </span>
             <input
-              className="h-[24px] min-w-0 text-gray-400 text-right pr-[6px] bg-transparent"
+              className="h-[24px] min-w-0 text-gray-400 text-right pr-[6px] bg-transparent outline-none"
               type="number"
               step="0.1"
               value="10.5"
             />
           </div>
-          <div className="flex grow basis-0 items-center bg-gray-700  rounded-[3px]">
-            hi
+          <div className="flex grow basis-0 min-w-0 items-center bg-gray-700 rounded-[3px]">
+            <span className="w-[12px] shrink-0 text-center select-none text-gray-500 ">
+              x
+            </span>
+            <input
+              className="h-[24px] min-w-0 text-gray-400 text-right pr-[6px] bg-transparent outline-none"
+              type="number"
+              step="0.1"
+              value="10.5"
+            />
           </div>
-          <div className="flex grow basis-0 items-center bg-gray-700  rounded-[3px]">
-            hi
+          <div className="flex grow basis-0 min-w-0 items-center bg-gray-700 rounded-[3px]">
+            <span className="w-[12px] shrink-0 text-center select-none text-gray-500 ">
+              x
+            </span>
+            <input
+              className="h-[24px] min-w-0 text-gray-400 text-right pr-[6px] bg-transparent outline-none"
+              type="number"
+              step="0.1"
+              value="10.5"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="flex items-center w-[260px] h-[24px] px-[10px]">
+        <label>args</label>
+        <div className="flex gap-[6px] items-center w-[160px] ml-auto">
+          <div className="flex grow basis-0 min-w-0 items-center bg-gray-700 rounded-[3px]">
+            <span className="w-[12px] shrink-0 text-center select-none text-gray-500 ">
+              x
+            </span>
+            <input
+              className="h-[24px] min-w-0 text-gray-400 text-right pr-[6px] bg-transparent outline-none"
+              type="number"
+              step="0.1"
+              value="10.5"
+            />
+          </div>
+          <div className="flex grow basis-0 min-w-0 items-center bg-gray-700 rounded-[3px]">
+            <span className="w-[12px] shrink-0 text-center select-none text-gray-500 ">
+              x
+            </span>
+            <input
+              className="h-[24px] min-w-0 text-gray-400 text-right pr-[6px] bg-transparent outline-none"
+              type="number"
+              step="0.1"
+              value="10.5"
+            />
           </div>
         </div>
       </div>
