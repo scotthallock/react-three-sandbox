@@ -6,6 +6,8 @@ import ObjectControlTable from './components/ObjectControlTable';
 
 import { AXIS, GEOMETRY, MATERIAL, ACTION } from './types';
 
+import ObjectControl from './components/ObjectControl';
+
 const initialObjects = {
   0: {
     iden: 0,
@@ -139,7 +141,9 @@ function App() {
         </Canvas>
       </div>
 
-      <div className="bg-gray-800 m-4 flex gap-4">
+      <ObjectControl />
+
+      {/* <div className="bg-gray-800 m-4 flex gap-4">
         <input
           type="color"
           className="bg-none outline-none border-none"
@@ -151,7 +155,7 @@ function App() {
           checked={showGridHelper}
           onChange={() => setShowGridHelper(!showGridHelper)}
         />
-      </div>
+      </div> */}
 
       <ObjectControlTable
         objects={objects}
