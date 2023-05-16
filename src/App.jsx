@@ -113,9 +113,9 @@ function App() {
 
   return (
     <>
-      <h1 className="text-xl select-none font-medium uppercase text-gray-200 mt-4 ml-4">
+      {/* <h1 className="text-xl select-none font-medium uppercase text-gray-200 mt-4 ml-4">
         React Three Sandbox
-      </h1>
+      </h1> */}
       <div id="canvas-container" className="aspect-[1.91/1] m-4 shadow-lg">
         <Canvas>
           <color attach="background" args={[backgroundColor]} />
