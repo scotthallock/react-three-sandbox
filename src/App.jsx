@@ -7,11 +7,14 @@ import ControlPanelContainer from './components/ControlPanelContainer';
 
 import { AXIS, GEOMETRY, MATERIAL, ACTION } from './types';
 
+console.log(MATERIAL);
+
 const initialObjects = {
   0: {
-    iden: 0,
-    geometry: GEOMETRY.TEXT3D,
-    material: MATERIAL.NORMAL,
+    uuid: 0,
+    name: 'sup',
+    geometry: GEOMETRY.Text3D,
+    material: MATERIAL.Normal,
     color: '#00ff00',
     text: 'sup',
     args: [1, 1, 1],
@@ -20,9 +23,10 @@ const initialObjects = {
     rotation: [0, 0, 0],
   },
   1: {
-    iden: 1,
-    geometry: GEOMETRY.TEXT3D,
-    material: MATERIAL.PHONG,
+    uuid: 1,
+    name: 'hello',
+    geometry: GEOMETRY.Text3D,
+    material: MATERIAL.Phong,
     color: '#00ffff',
     text: 'hello',
     args: [1, 1, 1],
@@ -31,9 +35,10 @@ const initialObjects = {
     rotation: [0, 0, 0],
   },
   2: {
-    iden: 2,
-    geometry: GEOMETRY.BOX,
-    material: MATERIAL.PHONG,
+    uuid: 2,
+    name: 'box',
+    geometry: GEOMETRY.Box,
+    material: MATERIAL.Phong,
     color: '#ff00ff',
     text: 'world',
     args: [1, 2, 1],
@@ -50,6 +55,7 @@ function App() {
   const [showGridHelper, setShowGridHelper] = useState(true);
 
   const handleAction = (action, uuid, value, argNo) => {
+    console.log({ action, uuid, value, argNo });
     if (!objects[uuid]) throw new Error('uuid invalid');
     const newObjects = structuredClone(objects);
     switch (action) {
@@ -62,13 +68,17 @@ function App() {
         break;
 
       case ACTION.DUPLICATE_OBJECT:
-        const duplicate = structuredClone(newObjects[id]);
-        duplicate.iden = nextId;
+        const duplicate = structuredClone(newObjects[uuid]);
+        duplicate.uuid = nextId;
         // Offset the new duplicate object so you see it
         duplicate.position[AXIS.X] += 0.5;
         duplicate.position[AXIS.Z] += 0.5;
         newObjects[nextId] = duplicate;
         setNextId(nextId + 1);
+        break;
+
+      case ACTION.CHANGE_NAME:
+        newObjects[uuid].name = value;
         break;
 
       case ACTION.CHANGE_GEOMETRY:
@@ -77,6 +87,8 @@ function App() {
         break;
 
       case ACTION.CHANGE_MATERIAL:
+        console.log('here');
+        console.log(MATERIAL[value]);
         if (!MATERIAL[value]) throw new Error('material invalid');
         newObjects[uuid].material = value;
         break;
@@ -122,14 +134,14 @@ function App() {
 
           {Object.values(objects).map((obj) => {
             switch (obj.geometry) {
-              case GEOMETRY.TEXT3D:
-                return <Text3DModel key={obj.iden} {...obj} />;
-              case GEOMETRY.TEXT2D:
-                return <Text2DModel key={obj.iden} {...obj} />;
-              case GEOMETRY.BOX:
-                return <BoxObject key={obj.iden} {...obj} />;
-              case GEOMETRY.SPHERE:
-                return <SphereObject key={obj.iden} {...obj} />;
+              case GEOMETRY.Text3D:
+                return <Text3DModel key={obj.uuid} {...obj} />;
+              case GEOMETRY.Text:
+                return <Text2DModel key={obj.uuid} {...obj} />;
+              case GEOMETRY.Box:
+                return <BoxObject key={obj.uuid} {...obj} />;
+              case GEOMETRY.Sphere:
+                return <SphereObject key={obj.uuid} {...obj} />;
               default:
                 return null;
             }
@@ -140,7 +152,7 @@ function App() {
         </Canvas>
       </div>
 
-      <ControlPanelContainer models={objects} handlAction={handleAction} />
+      <ControlPanelContainer models={objects} handleAction={handleAction} />
     </>
   );
 }
@@ -204,9 +216,9 @@ function SphereObject(props) {
 }
 
 function Text3DModel(props) {
-  const { iden, scale, rotation, material, color, text } = props;
+  const { uuid, scale, rotation, material, color, text } = props;
 
-  console.log(`### RENDER ${iden} ###`);
+  console.log(`### RENDER ${uuid} ###`);
 
   const memoMaterial = useMemo(() => {
     return createThreeMaterial(material, color);
@@ -239,9 +251,9 @@ function Text3DModel(props) {
 }
 
 function Text2DModel({ children, ...props }) {
-  const { iden, text, scale, position, rotation, color, material } = props;
+  const { uuid, text, scale, position, rotation, color, material } = props;
 
-  console.log(`### RENDER ${iden} ###`);
+  console.log(`### RENDER ${uuid} ###`);
 
   const memoMaterial = useMemo(() => {
     return createThreeMaterial(material, color);
@@ -262,15 +274,15 @@ function Text2DModel({ children, ...props }) {
 }
 
 function createThreeMaterial(material, color) {
-  if (material === MATERIAL.NORMAL) {
+  if (material === MATERIAL.Normal) {
     return new THREE.MeshNormalMaterial();
-  } else if (material === MATERIAL.PHONG) {
+  } else if (material === MATERIAL.Phong) {
     return new THREE.MeshPhongMaterial({ color });
-  } else if (material === MATERIAL.BASIC) {
+  } else if (material === MATERIAL.Basic) {
     return new THREE.MeshBasicMaterial({ color });
-  } else if (material === MATERIAL.TOON) {
+  } else if (material === MATERIAL.Toon) {
     return new THREE.MeshToonMaterial({ color });
-  } else if ((material = MATERIAL.STANDARD)) {
+  } else if ((material = MATERIAL.Standard)) {
     return new THREE.MeshStandardMaterial({ color });
   }
 }
