@@ -1,4 +1,4 @@
-import { ACTION } from '../types';
+import { ACTION } from '../../utils/types';
 
 const ControlPanelButtons = ({ uuid, handleAction, toggleMinimize }) => (
   <div className="flex items-center justify-end gap-[6px] w-[260px] min-h-[24px] px-[10px]">

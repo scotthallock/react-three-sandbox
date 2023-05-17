@@ -5,7 +5,9 @@ import { Center, OrbitControls, Text, Text3D } from '@react-three/drei';
 
 import ControlPanelContainer from './components/ControlPanelContainer';
 
-import { AXIS, GEOMETRY, MATERIAL, ACTION } from './types';
+import Text3DModel from './components/models/Text3DModel';
+
+import { AXIS, GEOMETRY, MATERIAL, ACTION } from '../utils/types';
 
 console.log(MATERIAL);
 
@@ -45,7 +47,7 @@ const initialObjects = {
     text: 'world',
     args: [1, 2, 1],
     scale: 2,
-    position: [1.4, 1.4, 0],
+    position: [0, 0, 0],
     rotationDeg: [0, 0, 0],
     rotationRad: [0, 0, 0],
   },
@@ -169,12 +171,6 @@ function Lights() {
   );
 }
 
-// Very helpful resource:
-// https://sbcode.net/react-three-fiber/use-memo/
-// Only create a new material if the `material` or `color` props have changed.
-// Without useMemo, we would be unnecessarily creating a new instance of
-// THREE.Material every time we change the position (but not the material).
-
 function BoxObject(props) {
   const { material, color, args, position, rotationRad } = props;
 
@@ -215,35 +211,8 @@ function SphereObject(props) {
   );
 }
 
-function Text3DModel(props) {
-  const { uuid, scale, position, rotationRad, material, color, text } = props;
-
-  const memoMaterial = useMemo(() => {
-    return createThreeMaterial(material, color);
-  }, [material, color]);
-
-  return (
-    <Text3D
-      font="./src/assets/Inter_Regular.json"
-      scale={scale}
-      position={position}
-      rotation={rotationRad}
-      lineHeight={0.7}
-      curveSegments={12}
-      bevelEnabled
-      bevelThickness={0.01}
-      bevelSize={0.01}
-      bevelOffset={0}
-      bevelSegments={5}
-      material={memoMaterial}
-    >
-      {text}
-    </Text3D>
-  );
-}
-
 function Text2DModel({ children, ...props }) {
-  const { uuid, text, scale, position, rotationRad, color, material } = props;
+  const { text, scale, position, rotationRad, color, material } = props;
 
   const memoMaterial = useMemo(() => {
     return createThreeMaterial(material, color);
@@ -251,9 +220,9 @@ function Text2DModel({ children, ...props }) {
 
   return (
     <Text
+      material={memoMaterial}
       position={position}
       rotation={rotationRad}
-      material={memoMaterial}
       font="./src/assets/Inter_Regular.json"
       fontSize={1}
       scale={scale}

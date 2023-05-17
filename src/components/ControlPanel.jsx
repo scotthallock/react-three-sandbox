@@ -8,7 +8,7 @@ import InputTextArea from './InputTextArea';
 import InputCheckbox from './InputCheckbox';
 import InputSelect from './InputSelect';
 
-import { GEOMETRY, MATERIAL, ACTION, AXIS } from '../types';
+import { GEOMETRY, MATERIAL, ACTION, AXIS } from '../../utils/types';
 
 const ControlPanel = (props) => {
   const {
