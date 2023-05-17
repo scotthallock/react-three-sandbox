@@ -1,9 +1,9 @@
 import ControlPanel from './ControlPanel';
 
 const ControlPanelContainer = (props) => {
-  const { objects, handleAction } = props;
+  const { models, handleAction } = props;
 
-  const controlPanels = Object.values(objects).map((modelProps) => {
+  const controlPanels = Object.values(models).map((modelProps) => {
     return <ControlPanel key={modelProps.uuid} {...modelProps} />;
   });
 

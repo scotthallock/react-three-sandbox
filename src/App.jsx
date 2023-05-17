@@ -112,10 +112,10 @@ function App() {
 
   return (
     <>
-      {/* <h1 className="text-xl select-none font-medium uppercase text-gray-200 mt-4 ml-4">
-        React Three Sandbox
-      </h1> */}
-      <div id="canvas-container" className="aspect-[1.91/1] m-4 shadow-lg">
+      <div
+        id="canvas-container"
+        className="aspect-[1.91/1] m-4 shadow-lg rounded-[10px] overflow-hidden shadow-md"
+      >
         <Canvas>
           <color attach="background" args={[backgroundColor]} />
           <Lights />
@@ -140,21 +140,7 @@ function App() {
         </Canvas>
       </div>
 
-      <ControlPanelContainer objects={objects} handlAction={handleAction} />
-
-      {/* <div className="bg-gray-800 m-4 flex gap-4">
-        <input
-          type="color"
-          className="bg-none outline-none border-none"
-          value={backgroundColor}
-          onChange={(e) => setBackgroundColor(e.target.value)}
-        />
-        <input
-          type="checkbox"
-          checked={showGridHelper}
-          onChange={() => setShowGridHelper(!showGridHelper)}
-        />
-      </div> */}
+      <ControlPanelContainer models={objects} handlAction={handleAction} />
     </>
   );
 }

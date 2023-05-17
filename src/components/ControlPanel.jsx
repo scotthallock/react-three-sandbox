@@ -1,16 +1,14 @@
 import { useState } from 'react';
-
 import InputText from './InputText';
 import InputNumber from './InputNumber';
 import InputNumberMultiple from './InputNumberMultiple';
 import InputColor from './InputColor';
 import InputTextArea from './InputTextArea';
 import InputCheckbox from './InputCheckbox';
-import InputSelect from './three/InputSelect';
+import InputSelect from './InputSelect';
 
 const ControlPanel = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const [name, setName] = useState('beeg circle');
 
   if (collapsed) {
     return (
@@ -29,7 +27,7 @@ const ControlPanel = () => {
     <div className="w-min py-[10px] rounded-[10px] bg-zinc-900 text-gray-400 font-mono text-[11px] flex flex-col gap-[6px] shadow-md">
       <InputText
         label="name"
-        value={name}
+        value={'hello'}
         handleChange={() => console.log('CHANGE NAME')}
       />
 
