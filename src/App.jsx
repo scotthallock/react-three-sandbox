@@ -1,62 +1,18 @@
 import * as THREE from 'three';
-import { useState, useRef, useEffect, useMemo } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Center, OrbitControls } from '@react-three/drei';
-
-import ControlPanelContainer from './components/ControlPanelContainer';
+import { useState } from 'react';
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls } from '@react-three/drei';
 
 import Text3DModel from './components/models/Text3DModel';
 import TextModel from './components/models/TextModel';
 import BoxModel from './components/models/BoxModel';
+import initialModels from '../utils/initialModels';
+import ControlPanelContainer from './components/ControlPanelContainer';
 
 import { AXIS, GEOMETRY, MATERIAL, ACTION } from '../utils/types';
 
-console.log(MATERIAL);
-
-const initialObjects = {
-  0: {
-    uuid: 0,
-    name: 'sup',
-    geometry: GEOMETRY.Text3D,
-    material: MATERIAL.Normal,
-    color: '#00ff00',
-    text: 'sup',
-    args: [1, 1, 1],
-    scale: 1,
-    position: [0, 0, 0],
-    rotationDeg: [0, 0, 0],
-    rotationRad: [0, 0, 0],
-  },
-  1: {
-    uuid: 1,
-    name: 'hello',
-    geometry: GEOMETRY.Text3D,
-    material: MATERIAL.Phong,
-    color: '#00ffff',
-    text: 'hello',
-    args: [1, 1, 1],
-    scale: 1,
-    position: [1, 2, 1],
-    rotationDeg: [0, 0, 0],
-    rotationRad: [0, 0, 0],
-  },
-  2: {
-    uuid: 2,
-    name: 'box',
-    geometry: GEOMETRY.Box,
-    material: MATERIAL.Phong,
-    color: '#ff00ff',
-    text: 'world',
-    args: [1, 2, 1],
-    scale: 2,
-    position: [0, 0, 0],
-    rotationDeg: [0, 0, 0],
-    rotationRad: [0, 0, 0],
-  },
-};
-
 function App() {
-  const [objects, setObjects] = useState(initialObjects);
+  const [objects, setObjects] = useState(initialModels);
   const [nextId, setNextId] = useState(3); // needs to be changed
   const [backgroundColor, setBackgroundColor] = useState('#082f49');
   const [showGridHelper, setShowGridHelper] = useState(true);
@@ -171,34 +127,6 @@ function Lights() {
       <pointLight position={[-10, -10, -10]} />
     </>
   );
-}
-
-function SphereObject(props) {
-  const { material, color, args, position, rotationRad } = props;
-
-  const memoMaterial = useMemo(() => {
-    return createThreeMaterial(material, color);
-  }, [material, color]);
-
-  return (
-    <mesh material={memoMaterial} position={position} rotation={rotationRad}>
-      <sphereGeometry args={args} />
-    </mesh>
-  );
-}
-
-function createThreeMaterial(material, color) {
-  if (material === MATERIAL.Normal) {
-    return new THREE.MeshNormalMaterial();
-  } else if (material === MATERIAL.Phong) {
-    return new THREE.MeshPhongMaterial({ color });
-  } else if (material === MATERIAL.Basic) {
-    return new THREE.MeshBasicMaterial({ color });
-  } else if (material === MATERIAL.Toon) {
-    return new THREE.MeshToonMaterial({ color });
-  } else if ((material = MATERIAL.Standard)) {
-    return new THREE.MeshStandardMaterial({ color });
-  }
 }
 
 export default App;
