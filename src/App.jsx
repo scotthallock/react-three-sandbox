@@ -6,6 +6,7 @@ import { Center, OrbitControls, Text, Text3D } from '@react-three/drei';
 import ControlPanelContainer from './components/ControlPanelContainer';
 
 import Text3DModel from './components/models/Text3DModel';
+import TextModel from './components/models/TextModel';
 
 import { AXIS, GEOMETRY, MATERIAL, ACTION } from '../utils/types';
 
@@ -141,7 +142,7 @@ function App() {
               case GEOMETRY.Text3D:
                 return <Text3DModel key={obj.uuid} {...obj} />;
               case GEOMETRY.Text:
-                return <Text2DModel key={obj.uuid} {...obj} />;
+                return <TextModel key={obj.uuid} {...obj} />;
               case GEOMETRY.Box:
                 return <BoxObject key={obj.uuid} {...obj} />;
               case GEOMETRY.Sphere:
@@ -208,27 +209,6 @@ function SphereObject(props) {
     <mesh material={memoMaterial} position={position} rotation={rotationRad}>
       <sphereGeometry args={args} />
     </mesh>
-  );
-}
-
-function Text2DModel({ children, ...props }) {
-  const { text, scale, position, rotationRad, color, material } = props;
-
-  const memoMaterial = useMemo(() => {
-    return createThreeMaterial(material, color);
-  }, [material, color]);
-
-  return (
-    <Text
-      material={memoMaterial}
-      position={position}
-      rotation={rotationRad}
-      font="./src/assets/Inter_Regular.json"
-      fontSize={1}
-      scale={scale}
-    >
-      {text}
-    </Text>
   );
 }
 
