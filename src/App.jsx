@@ -20,7 +20,8 @@ const initialObjects = {
     args: [1, 1, 1],
     scale: 1,
     position: [0, 0, 0],
-    rotation: [0, 0, 0],
+    rotationDeg: [0, 0, 0],
+    rotationRad: [0, 0, 0],
   },
   1: {
     uuid: 1,
@@ -32,7 +33,8 @@ const initialObjects = {
     args: [1, 1, 1],
     scale: 1,
     position: [1, 2, 1],
-    rotation: [0, 0, 0],
+    rotationDeg: [0, 0, 0],
+    rotationRad: [0, 0, 0],
   },
   2: {
     uuid: 2,
@@ -44,7 +46,8 @@ const initialObjects = {
     args: [1, 2, 1],
     scale: 2,
     position: [1.4, 1.4, 0],
-    rotation: [0, 10, 5],
+    rotationDeg: [0, 0, 0],
+    rotationRad: [0, 0, 0],
   },
 };
 
@@ -55,9 +58,9 @@ function App() {
   const [showGridHelper, setShowGridHelper] = useState(true);
 
   const handleAction = (action, uuid, value, argNo) => {
-    console.log({ action, uuid, value, argNo });
     if (!objects[uuid]) throw new Error('uuid invalid');
     const newObjects = structuredClone(objects);
+
     switch (action) {
       case ACTION.ADD_OBJECT:
         console.log('ADD_OBJECT');
@@ -70,7 +73,6 @@ function App() {
       case ACTION.DUPLICATE_OBJECT:
         const duplicate = structuredClone(newObjects[uuid]);
         duplicate.uuid = nextId;
-        // Offset the new duplicate object so you see it
         duplicate.position[AXIS.X] += 0.5;
         duplicate.position[AXIS.Z] += 0.5;
         newObjects[nextId] = duplicate;
@@ -115,8 +117,8 @@ function App() {
         break;
 
       case ACTION.CHANGE_ROTATION:
-        // should there be a `rotationDeg` and a `rotationRad` ?
-        newObjects[uuid].rotation[argNo] = value;
+        newObjects[uuid].rotationDeg[argNo] = value;
+        newObjects[uuid].rotationRad[argNo] = THREE.MathUtils.degToRad(value);
         break;
     }
     setObjects(newObjects);
@@ -126,7 +128,7 @@ function App() {
     <>
       <div
         id="canvas-container"
-        className="aspect-[1.91/1] m-4 shadow-lg rounded-[10px] overflow-hidden shadow-md"
+        className="aspect-[1.91/1] m-4 rounded-[10px] overflow-hidden shadow-md"
       >
         <Canvas>
           <color attach="background" args={[backgroundColor]} />
@@ -174,7 +176,7 @@ function Lights() {
 // THREE.Material every time we change the position (but not the material).
 
 function BoxObject(props) {
-  const { material, color, args, position, rotation } = props;
+  const { material, color, args, position, rotationRad } = props;
 
   const memoMaterial = useMemo(() => {
     return createThreeMaterial(material, color);
@@ -191,7 +193,7 @@ function BoxObject(props) {
   // });
 
   return (
-    <Center onCentered={() => {}} position={position} rotation={rotation}>
+    <Center onCentered={() => {}} position={position} rotation={rotationRad}>
       <mesh ref={ref} material={memoMaterial}>
         <boxGeometry args={args} />
       </mesh>
@@ -200,60 +202,48 @@ function BoxObject(props) {
 }
 
 function SphereObject(props) {
-  const { material, color, args, position, rotation } = props;
+  const { material, color, args, position, rotationRad } = props;
 
   const memoMaterial = useMemo(() => {
     return createThreeMaterial(material, color);
   }, [material, color]);
 
   return (
-    <Center onCentered={() => {}} position={position} rotation={rotation}>
-      <mesh material={memoMaterial}>
-        <sphereGeometry args={args} />
-      </mesh>
-    </Center>
+    <mesh material={memoMaterial} position={position} rotation={rotationRad}>
+      <sphereGeometry args={args} />
+    </mesh>
   );
 }
 
 function Text3DModel(props) {
-  const { uuid, scale, rotation, material, color, text } = props;
-
-  console.log(`### RENDER ${uuid} ###`);
+  const { uuid, scale, position, rotationRad, material, color, text } = props;
 
   const memoMaterial = useMemo(() => {
     return createThreeMaterial(material, color);
   }, [material, color]);
 
   return (
-    <Center
+    <Text3D
+      font="./src/assets/Inter_Regular.json"
       scale={scale}
-      position={props.position}
-      rotation={rotation.map((degrees) => THREE.MathUtils.degToRad(degrees))}
-      onCentered={() => {
-        /* Without this, the text would not dynamically re-center*/
-      }}
+      position={position}
+      rotation={rotationRad}
+      lineHeight={0.7}
+      curveSegments={12}
+      bevelEnabled
+      bevelThickness={0.01}
+      bevelSize={0.01}
+      bevelOffset={0}
+      bevelSegments={5}
+      material={memoMaterial}
     >
-      <Text3D
-        font="./src/assets/Inter_Regular.json"
-        lineHeight={0.7}
-        curveSegments={12}
-        bevelEnabled
-        bevelThickness={0.01}
-        bevelSize={0.01}
-        bevelOffset={0}
-        bevelSegments={5}
-        material={memoMaterial}
-      >
-        {text}
-      </Text3D>
-    </Center>
+      {text}
+    </Text3D>
   );
 }
 
 function Text2DModel({ children, ...props }) {
-  const { uuid, text, scale, position, rotation, color, material } = props;
-
-  console.log(`### RENDER ${uuid} ###`);
+  const { uuid, text, scale, position, rotationRad, color, material } = props;
 
   const memoMaterial = useMemo(() => {
     return createThreeMaterial(material, color);
@@ -262,7 +252,7 @@ function Text2DModel({ children, ...props }) {
   return (
     <Text
       position={position}
-      rotation={rotation.map((degrees) => THREE.MathUtils.degToRad(degrees))}
+      rotation={rotationRad}
       material={memoMaterial}
       font="./src/assets/Inter_Regular.json"
       fontSize={1}

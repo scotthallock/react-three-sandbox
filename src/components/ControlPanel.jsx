@@ -21,7 +21,7 @@ const ControlPanel = (props) => {
     args,
     scale,
     position,
-    rotation,
+    rotationDeg,
     handleAction,
   } = props;
 
@@ -136,7 +136,7 @@ const ControlPanel = (props) => {
         label="rotation"
         step="5"
         symbols={['x', 'y', 'z']}
-        values={rotation}
+        values={rotationDeg}
         handleChanges={[
           (e) =>
             handleAction(ACTION.CHANGE_ROTATION, uuid, e.target.value, AXIS.X),
