@@ -2,11 +2,10 @@ import * as THREE from 'three';
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Center, OrbitControls, Text, Text3D } from '@react-three/drei';
-import ObjectControlTable from './components/ObjectControlTable';
+
+import ControlPanelContainer from './components/ControlPanelContainer';
 
 import { AXIS, GEOMETRY, MATERIAL, ACTION } from './types';
-
-import ObjectControl from './components/ObjectControl';
 
 const initialObjects = {
   0: {
@@ -141,7 +140,7 @@ function App() {
         </Canvas>
       </div>
 
-      <ObjectControl />
+      <ControlPanelContainer objects={objects} handlAction={handleAction} />
 
       {/* <div className="bg-gray-800 m-4 flex gap-4">
         <input
@@ -156,11 +155,6 @@ function App() {
           onChange={() => setShowGridHelper(!showGridHelper)}
         />
       </div> */}
-
-      <ObjectControlTable
-        objects={objects}
-        handleAction={handleAction} // yea
-      />
     </>
   );
 }

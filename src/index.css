@@ -20,4 +20,13 @@
     -webkit-appearance: none;
     background: none;
   }
+
+  ::-webkit-scrollbar {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #047857;
+    border-radius: 3px;
+  }
 }
