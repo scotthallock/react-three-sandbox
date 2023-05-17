@@ -51,7 +51,7 @@ const initialObjects = {
 function App() {
   const [objects, setObjects] = useState(initialObjects);
   const [nextId, setNextId] = useState(3); // needs to be changed
-  const [backgroundColor, setBackgroundColor] = useState('#fed200');
+  const [backgroundColor, setBackgroundColor] = useState('#082f49');
   const [showGridHelper, setShowGridHelper] = useState(true);
 
   const handleAction = (action, uuid, value, argNo) => {
