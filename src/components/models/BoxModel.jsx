@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { createThreeMaterial } from '../../../utils/helpers';
 
 const BoxModel = (props) => {
-  const { material, color, args, position, rotationRad } = props;
+  const { args, material, color, scale, position, rotationRad } = props;
 
   const memoMaterial = useMemo(() => {
     return createThreeMaterial(material, color);
@@ -19,14 +19,21 @@ const BoxModel = (props) => {
    *   console.log('geometry:', ref.current.geometry.uuid);
    *   console.log('material:', ref.current.material.uuid);
    * });
+   *
+   * The useMemo hook ensures we are not needlessly creating new instances of
+   * material, even if the `material` or `color` have not changed since the last
+   * render.
    */
 
   return (
-    // <Center onCentered={() => {}}>
-    <mesh material={memoMaterial} position={position} rotation={rotationRad}>
+    <mesh
+      material={memoMaterial}
+      scale={scale}
+      position={position}
+      rotation={rotationRad}
+    >
       <boxGeometry args={args} />
     </mesh>
-    // </Center>
   );
 };
 
