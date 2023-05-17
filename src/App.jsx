@@ -1,12 +1,13 @@
 import * as THREE from 'three';
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Center, OrbitControls, Text, Text3D } from '@react-three/drei';
+import { Center, OrbitControls } from '@react-three/drei';
 
 import ControlPanelContainer from './components/ControlPanelContainer';
 
 import Text3DModel from './components/models/Text3DModel';
 import TextModel from './components/models/TextModel';
+import BoxModel from './components/models/BoxModel';
 
 import { AXIS, GEOMETRY, MATERIAL, ACTION } from '../utils/types';
 
@@ -144,7 +145,7 @@ function App() {
               case GEOMETRY.Text:
                 return <TextModel key={obj.uuid} {...obj} />;
               case GEOMETRY.Box:
-                return <BoxObject key={obj.uuid} {...obj} />;
+                return <BoxModel key={obj.uuid} {...obj} />;
               case GEOMETRY.Sphere:
                 return <SphereObject key={obj.uuid} {...obj} />;
               default:
@@ -169,32 +170,6 @@ function Lights() {
       <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
       <pointLight position={[-10, -10, -10]} />
     </>
-  );
-}
-
-function BoxObject(props) {
-  const { material, color, args, position, rotationRad } = props;
-
-  const memoMaterial = useMemo(() => {
-    return createThreeMaterial(material, color);
-  }, [material, color]);
-
-  // This code can show us if we are creating a new instance of geometry or
-  // material when this component re-renders. If the uuid is unchanged, we
-  // are re-using the current instance. If the uuid is changed, we are creating
-  // a new instance.
-  const ref = useRef();
-  // useEffect(() => {
-  //   console.log('geometry:', ref.current.geometry.uuid);
-  //   console.log('material:', ref.current.material.uuid);
-  // });
-
-  return (
-    <Center onCentered={() => {}} position={position} rotation={rotationRad}>
-      <mesh ref={ref} material={memoMaterial}>
-        <boxGeometry args={args} />
-      </mesh>
-    </Center>
   );
 }
 
