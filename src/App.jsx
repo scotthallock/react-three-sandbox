@@ -11,6 +11,9 @@ import ControlPanelContainer from './components/ControlPanelContainer';
 
 import { AXIS, GEOMETRY, MATERIAL, ACTION } from '../utils/types';
 
+//
+import InputColor from './components/InputColor';
+
 function App() {
   const [objects, setObjects] = useState(initialModels);
   const [nextId, setNextId] = useState(3); // needs to be changed
@@ -112,6 +115,15 @@ function App() {
           {showGridHelper ? <gridHelper /> : null}
           <OrbitControls makeDefault enableDamping={false} />
         </Canvas>
+      </div>
+
+      <div className="m-4 bg-green-950 flex flex-col gap-[6px] font-mono text-[11px] text-gray-400">
+        <span>Controls</span>
+        <InputColor
+          value={backgroundColor}
+          handleChange={(e) => setBackgroundColor(e.target.value)}
+          handleBlur={(value) => setBackgroundColor(value)}
+        />
       </div>
 
       <ControlPanelContainer models={objects} handleAction={handleAction} />

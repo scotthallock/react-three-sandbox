@@ -107,6 +107,7 @@ const ControlPanel = (props) => {
         handleChange={(e) =>
           handleAction(ACTION.CHANGE_COLOR, uuid, e.target.value)
         }
+        handleBlur={(value) => handleAction(ACTION.CHANGE_COLOR, uuid, value)}
       />
 
       <InputNumber
