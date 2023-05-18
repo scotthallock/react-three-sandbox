@@ -1,90 +1,119 @@
 import * as THREE from 'three';
 import { useState } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
+import { OrbitControls, Grid } from '@react-three/drei';
 
+import GridModel from './components/models/GridModel';
 import Text3DModel from './components/models/Text3DModel';
 import TextModel from './components/models/TextModel';
 import BoxModel from './components/models/BoxModel';
+import SphereModel from './components/models/SphereModel';
+
 import initialModels from '../utils/initialModels';
 import ControlPanelContainer from './components/ControlPanelContainer';
 
-import { AXIS, GEOMETRY, MATERIAL, ACTION } from '../utils/types';
-
-//
-import InputColor from './components/InputColor';
+import { AXIS, GEOMETRY, MATERIAL, ACTION, SCENE_ACTION } from '../utils/types';
 
 function App() {
-  const [objects, setObjects] = useState(initialModels);
+  const [scene, setScene] = useState({
+    backgroundColor: '#082f49',
+    showGrid: true,
+    gridSize: 10,
+    gridCellColor: '#aaaaaa',
+    gridSectionColor: '#2080ff',
+    gridInfinite: false,
+    gridFadeDistance: 100,
+  });
+  const [models, setModels] = useState(initialModels);
   const [nextId, setNextId] = useState(3); // needs to be changed
-  const [backgroundColor, setBackgroundColor] = useState('#082f49');
-  const [showGridHelper, setShowGridHelper] = useState(true);
+
+  const handleSceneAction = (action, value) => {
+    const newScene = structuredClone(scene);
+
+    switch (action) {
+      case SCENE_ACTION.BACKGROUND_COLOR:
+        newScene.backgroundColor = value;
+        break;
+      case SCENE_ACTION.SHOW_GRID:
+        newScene.showGrid = !newScene.showGrid;
+        break;
+      case SCENE_ACTION.GRID_SIZE:
+        newScene.gridArgs = [value, value];
+        break;
+      case SCENE_ACTION.GRID_INFINITE:
+        newScene.gridInfinite = !newScene.gridInfinite;
+        break;
+      case SCENE_ACTION.GRID_CELL_COLOR:
+        newScene.gridCellColor = value;
+        break;
+      case SCENE_ACTION.GRID_SECTION_COLOR:
+        newScene.gridSectionColor = value;
+        break;
+      case SCENE_ACTION.GRID_FADE_DISTANCE:
+        newScene.gridFadeDistance = value;
+        break;
+      default:
+        return;
+    }
+    setScene(newScene);
+  };
 
   const handleAction = (action, uuid, value, argNo) => {
-    if (!objects[uuid]) throw new Error('uuid invalid');
-    const newObjects = structuredClone(objects);
+    if (!models[uuid]) throw new Error('uuid invalid');
+    const newModels = structuredClone(models);
 
     switch (action) {
       case ACTION.ADD_OBJECT:
         console.log('ADD_OBJECT');
         break;
-
       case ACTION.DELETE_OBJECT:
-        delete newObjects[uuid];
+        delete newModels[uuid];
         break;
-
       case ACTION.DUPLICATE_OBJECT:
-        const duplicate = structuredClone(newObjects[uuid]);
+        const duplicate = structuredClone(newModels[uuid]);
         duplicate.uuid = nextId;
         duplicate.position[AXIS.X] += 0.5;
         duplicate.position[AXIS.Z] += 0.5;
-        newObjects[nextId] = duplicate;
+        newModels[nextId] = duplicate;
         setNextId(nextId + 1);
         break;
-
       case ACTION.CHANGE_NAME:
-        newObjects[uuid].name = value;
+        newModels[uuid].name = value;
         break;
-
       case ACTION.CHANGE_GEOMETRY:
         if (!GEOMETRY[value]) throw new Error('geometry invalid');
-        newObjects[uuid].geometry = value;
+        newModels[uuid].geometry = value;
         break;
-
       case ACTION.CHANGE_MATERIAL:
         console.log('here');
         console.log(MATERIAL[value]);
         if (!MATERIAL[value]) throw new Error('material invalid');
-        newObjects[uuid].material = value;
+        newModels[uuid].material = value;
         break;
-
       case ACTION.CHANGE_COLOR:
-        newObjects[uuid].color = value;
+        newModels[uuid].color = value;
         break;
-
       case ACTION.CHANGE_TEXT:
-        newObjects[uuid].text = value;
+        newModels[uuid].text = value;
         break;
-
       case ACTION.CHANGE_ARGS:
         if (typeof argNo !== 'number') throw new Error('argNo invalid');
-        newObjects[uuid].args[argNo] = value;
+        newModels[uuid].args[argNo] = value;
         break;
-
       case ACTION.CHANGE_SCALE:
-        newObjects[uuid].scale = value;
+        newModels[uuid].scale = value;
         break;
-
       case ACTION.CHANGE_POSITION:
-        newObjects[uuid].position[argNo] = value;
+        newModels[uuid].position[argNo] = value;
         break;
-
       case ACTION.CHANGE_ROTATION:
-        newObjects[uuid].rotationDeg[argNo] = value;
-        newObjects[uuid].rotationRad[argNo] = THREE.MathUtils.degToRad(value);
+        newModels[uuid].rotationDeg[argNo] = value;
+        newModels[uuid].rotationRad[argNo] = THREE.MathUtils.degToRad(value);
         break;
+      default:
+        return;
     }
-    setObjects(newObjects);
+    setModels(newModels);
   };
 
   return (
@@ -94,10 +123,13 @@ function App() {
         className="aspect-[1.91/1] m-4 rounded-[10px] overflow-hidden shadow-md"
       >
         <Canvas>
-          <color attach="background" args={[backgroundColor]} />
+          <color attach="background" args={[scene.backgroundColor]} />
+
+          <GridModel {...scene} />
+
           <Lights />
 
-          {Object.values(objects).map((obj) => {
+          {Object.values(models).map((obj) => {
             switch (obj.geometry) {
               case GEOMETRY.Text3D:
                 return <Text3DModel key={obj.uuid} {...obj} />;
@@ -106,27 +138,22 @@ function App() {
               case GEOMETRY.Box:
                 return <BoxModel key={obj.uuid} {...obj} />;
               case GEOMETRY.Sphere:
-                return <SphereObject key={obj.uuid} {...obj} />;
+                return <SphereModel key={obj.uuid} {...obj} />;
               default:
                 return null;
             }
           })}
 
-          {showGridHelper ? <gridHelper /> : null}
           <OrbitControls makeDefault enableDamping={false} />
         </Canvas>
       </div>
 
-      <div className="m-4 bg-green-950 flex flex-col gap-[6px] font-mono text-[11px] text-gray-400">
-        <span>Controls</span>
-        <InputColor
-          value={backgroundColor}
-          handleChange={(e) => setBackgroundColor(e.target.value)}
-          handleBlur={(value) => setBackgroundColor(value)}
-        />
-      </div>
-
-      <ControlPanelContainer models={objects} handleAction={handleAction} />
+      <ControlPanelContainer
+        scene={scene}
+        handleSceneAction={handleSceneAction}
+        models={models}
+        handleAction={handleAction}
+      />
     </>
   );
 }

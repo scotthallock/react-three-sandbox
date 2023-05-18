@@ -1,11 +1,27 @@
-import ControlPanel from './ControlPanel';
+import ControlPanelScene from './ControlPanelScene';
+import ControlPanelObject from './ControlPanelObject';
 
-const ControlPanelContainer = ({ models, handleAction }) => (
+const ControlPanelContainer = ({
+  scene,
+  handleSceneAction,
+  lights,
+  handleLightsAction,
+  models,
+  handleAction,
+}) => (
   <div className="m-4 pb-[10px] flex gap-[10px] overflow-x-auto overflow-y-hidden">
-    {Object.values(models).map((modelProps) => (
-      <ControlPanel
-        key={modelProps.uuid}
-        {...modelProps}
+    <ControlPanelScene
+      key="scene"
+      {...scene}
+      handleSceneAction={handleSceneAction}
+    />
+
+    {/** map lights to <ControlPanelLight /> */}
+
+    {Object.values(models).map((model) => (
+      <ControlPanelObject
+        key={model.uuid}
+        {...model}
         handleAction={handleAction}
       />
     ))}
