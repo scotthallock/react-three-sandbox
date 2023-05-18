@@ -10,12 +10,14 @@ import { SCENE_ACTION } from '../../utils/types';
 const ControlPanelScene = (props) => {
   const {
     backgroundColor,
+    showGizmo,
     showGrid,
     gridSize,
-    gridCellColor,
-    gridFadeDistance,
     gridInfinite,
+    gridCellColor,
     gridSectionColor,
+    gridFadeDistance,
+    gridYLevel,
     handleSceneAction,
   } = props;
 
@@ -44,6 +46,12 @@ const ControlPanelScene = (props) => {
         value={backgroundColor}
         handleChange={(e) => handleSceneAction(SCENE_ACTION.BACKGROUND_COLOR, e.target.value)}
         handleBlur={(value) => handleSceneAction(SCENE_ACTION.BACKGROUND_COLOR, value)}
+      />
+
+      <InputCheckbox
+        label="show gizmo"
+        checked={showGizmo}
+        handleChange={(e) => handleSceneAction(SCENE_ACTION.SHOW_GIZMO)}
       />
 
       <InputCheckbox
@@ -83,6 +91,12 @@ const ControlPanelScene = (props) => {
         label="fade dist"
         value={gridFadeDistance}
         handleChange={(e) => handleSceneAction(SCENE_ACTION.GRID_FADE_DISTANCE, e.target.value)}
+      />
+
+      <InputNumber
+        label="y-level"
+        value={gridYLevel}
+        handleChange={(e) => handleSceneAction(SCENE_ACTION.GRID_Y_LEVEL, e.target.value)}
       />
     </div>
   );

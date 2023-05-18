@@ -11,7 +11,7 @@ const ControlPanelButtons = ({
   <div className="relative flex items-center justify-end gap-[6px] w-[260px] min-h-[24px] px-[10px]">
     <button
       className="mr-auto fill-gray-400 hover:fill-emerald-500 disabled:fill-gray-800"
-      onClick={handleDelete}
+      onClick={handleDuplicate}
       disabled={!editable}
     >
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" height="18px" width="18px">
@@ -27,7 +27,7 @@ const ControlPanelButtons = ({
 
     <button
       className="fill-gray-400 hover:fill-red-500 disabled:fill-gray-800"
-      onClick={handleDuplicate}
+      onClick={handleDelete}
       disabled={!editable}
     >
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" height="18px" width="18px">
