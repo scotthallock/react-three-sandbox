@@ -26,12 +26,7 @@ const BoxModel = (props) => {
    */
 
   return (
-    <mesh
-      material={memoMaterial}
-      scale={scale}
-      position={position}
-      rotation={rotationRad}
-    >
+    <mesh material={memoMaterial} scale={scale} position={position} rotation={rotationRad}>
       <boxGeometry args={args} />
     </mesh>
   );

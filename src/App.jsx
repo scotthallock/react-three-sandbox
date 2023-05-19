@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { useState, useRef } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import { useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, GizmoHelper, GizmoViewport, useHelper } from '@react-three/drei';
 
@@ -9,25 +10,31 @@ import TextModel from './components/models/TextModel';
 import BoxModel from './components/models/BoxModel';
 import SphereModel from './components/models/SphereModel';
 
-import initialModels from '../utils/initialModels';
-import ControlPanelContainer from './components/ControlPanelContainer';
+import AmbientLight from './components/lights/AmbientLight';
+import DirectionalLight from './components/lights/DirectionalLight';
+import SpotLight from './components/lights/SpotLight';
+import PointLight from './components/lights/PointLight';
 
-import { AXIS, GEOMETRY, MATERIAL, ACTION, SCENE_ACTION } from '../utils/types';
+import ControlPanelContainer from './components/controls/ControlPanelContainer';
+
+import initialScene from '../utils/initialScene';
+import initialLights from '../utils/initialLights';
+import initialModels from '../utils/initialModels';
+
+import {
+  LIGHT,
+  AXIS,
+  GEOMETRY,
+  MATERIAL,
+  ACTION,
+  SCENE_ACTION,
+  LIGHT_ACTION,
+} from '../utils/types';
 
 function App() {
-  const [scene, setScene] = useState({
-    backgroundColor: '#082f49',
-    showGizmo: true,
-    showGrid: true,
-    gridSize: 10,
-    gridCellColor: '#aaaaaa',
-    gridSectionColor: '#2080ff',
-    gridInfinite: true,
-    gridFadeDistance: 100,
-    gridYLevel: -1,
-  });
+  const [scene, setScene] = useState(initialScene);
+  const [lights, setLights] = useState(initialLights);
   const [models, setModels] = useState(initialModels);
-  const [nextId, setNextId] = useState(3); // needs to be changed
 
   const handleSceneAction = (action, value) => {
     const newScene = structuredClone(scene);
@@ -66,6 +73,53 @@ function App() {
     setScene(newScene);
   };
 
+  const handleLightAction = (action, uuid, value, argNo) => {
+    if (!lights[uuid]) throw new Error('uuid invalid');
+    const newLights = structuredClone(lights);
+
+    switch (action) {
+      case LIGHT_ACTION.ADD_LIGHT:
+        console.log('ADD_LIGHT');
+        break;
+      case LIGHT_ACTION.DELETE_LIGHT:
+        delete newLights[uuid];
+        break;
+      case LIGHT_ACTION.DUPLICATE_LIGHT:
+        const duplicate = structuredClone(newLights[uuid]);
+        const newUuid = uuidv4();
+        duplicate.uuid = newUuid;
+        duplicate.position[AXIS.X] += 0.5;
+        duplicate.position[AXIS.Z] += 0.5;
+        newLights[newUuid] = duplicate;
+        break;
+      case LIGHT_ACTION.CHANGE_TYPE:
+        newLights[uuid].type = value;
+        break;
+      case LIGHT_ACTION.CHANGE_POSITION:
+        newLights[uuid].position[argNo] = value;
+        break;
+      case LIGHT_ACTION.CHANGE_COLOR:
+        newLights[uuid].color = value;
+        break;
+      case LIGHT_ACTION.CHANGE_ANGLE:
+        newLights[uuid].angle = value;
+        break;
+      case LIGHT_ACTION.CHANGE_INTENSITY:
+        newLights[uuid].intensity = value;
+        break;
+      case LIGHT_ACTION.TOGGLE_HELPER:
+        newLights[uuid].helper = !newLights[uuid].helper;
+        break;
+      case LIGHT_ACTION.CHANGE_HELPER_COLOR:
+        newLights[uuid].helperColor = value;
+        break;
+      default:
+        return;
+    }
+
+    setLights(newLights);
+  };
+
   const handleAction = (action, uuid, value, argNo) => {
     if (!models[uuid]) throw new Error('uuid invalid');
     const newModels = structuredClone(models);
@@ -79,11 +133,11 @@ function App() {
         break;
       case ACTION.DUPLICATE_OBJECT:
         const duplicate = structuredClone(newModels[uuid]);
-        duplicate.uuid = nextId;
+        const newUuid = uuidv4();
+        duplicate.uuid = newUuid;
         duplicate.position[AXIS.X] += 0.5;
         duplicate.position[AXIS.Z] += 0.5;
-        newModels[nextId] = duplicate;
-        setNextId(nextId + 1);
+        newModels[newUuid] = duplicate;
         break;
       case ACTION.CHANGE_NAME:
         newModels[uuid].name = value;
@@ -131,25 +185,6 @@ function App() {
         <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
           <color attach="background" args={[scene.backgroundColor]} />
 
-          <Lights />
-
-          {Object.values(models).map((obj) => {
-            switch (obj.geometry) {
-              case GEOMETRY.Text3D:
-                return <Text3DModel key={obj.uuid} {...obj} />;
-              case GEOMETRY.Text:
-                return <TextModel key={obj.uuid} {...obj} />;
-              case GEOMETRY.Box:
-                return <BoxModel key={obj.uuid} {...obj} />;
-              case GEOMETRY.Sphere:
-                return <SphereModel key={obj.uuid} {...obj} />;
-              default:
-                return null;
-            }
-          })}
-
-          <OrbitControls makeDefault enableDamping={false} regress />
-
           {scene.showGrid ? <GridModel {...scene} /> : null}
 
           {scene.showGizmo ? (
@@ -157,33 +192,49 @@ function App() {
               <GizmoViewport axisColors={['#9d4b4b', '#2f7f4f', '#3b5b9d']} labelColor="white" />
             </GizmoHelper>
           ) : null}
+
+          {Object.values(lights).map((light) => {
+            switch (light.type) {
+              case LIGHT.Ambient:
+                return <AmbientLight key={light.uuid} {...light} />;
+              case LIGHT.DirectionalLight:
+                return <DirectionalLight key={light.uuid} {...light} />;
+              case LIGHT.SpotLight:
+                return <SpotLight key={light.uuid} {...light} />;
+              case LIGHT.PointLight:
+                return <PointLight key={light.uuid} {...light} />;
+              default:
+                return null;
+            }
+          })}
+
+          {Object.values(models).map((model) => {
+            switch (model.geometry) {
+              case GEOMETRY.Text3D:
+                return <Text3DModel key={model.uuid} {...model} />;
+              case GEOMETRY.Text:
+                return <TextModel key={model.uuid} {...model} />;
+              case GEOMETRY.Box:
+                return <BoxModel key={model.uuid} {...model} />;
+              case GEOMETRY.Sphere:
+                return <SphereModel key={model.uuid} {...model} />;
+              default:
+                return null;
+            }
+          })}
+
+          <OrbitControls makeDefault enableDamping={false} regress />
         </Canvas>
       </div>
 
       <ControlPanelContainer
         scene={scene}
         handleSceneAction={handleSceneAction}
+        lights={lights}
+        handleLightAction={handleLightAction}
         models={models}
         handleAction={handleAction}
       />
-    </>
-  );
-}
-
-function Lights() {
-  const spotlight = useRef();
-  const pointlight = useRef();
-  const hemisphereLight = useRef();
-
-  useHelper(spotlight, THREE.SpotLightHelper, 'cyan');
-
-  useHelper(pointlight, THREE.PointLightHelper, 1, 'orange');
-
-  return (
-    <>
-      <ambientLight intensity={0.2} />
-      <spotLight ref={spotlight} position={[10, 10, 10]} angle={0.2} penumbra={1} />
-      <pointLight ref={pointlight} position={[-4, -4, -4]} intensity={5} color={'#ff0000'} />
     </>
   );
 }

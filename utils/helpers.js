@@ -8,9 +8,8 @@ export const createThreeMaterial = (material, color = '#ffffff') => {
     return new THREE.MeshBasicMaterial({ color });
   } else if (material === MATERIAL.Toon) {
     return new THREE.MeshToonMaterial({ color });
-  } else if ((material = MATERIAL.Standard)) {
+  } else if (material === MATERIAL.Standard) {
     return new THREE.MeshStandardMaterial({ color });
-  } else {
-    return new THREE.MeshNormalMaterial();
   }
+  return new THREE.MeshNormalMaterial();
 };

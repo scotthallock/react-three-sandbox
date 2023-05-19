@@ -7,7 +7,7 @@ import InputTextArea from './InputTextArea';
 import InputCheckbox from './InputCheckbox';
 import InputSelect from './InputSelect';
 
-import { GEOMETRY, MATERIAL, ACTION, AXIS } from '../../utils/types';
+import { GEOMETRY, MATERIAL, ACTION, AXIS } from '../../../utils/types';
 
 const ControlPanel = (props) => {
   const {
@@ -57,11 +57,27 @@ const ControlPanel = (props) => {
         handleChange={(e) => handleAction(ACTION.CHANGE_GEOMETRY, uuid, e.target.value)}
       />
 
-      <InputTextArea
-        label="text"
-        value={text}
-        handleChange={(e) => handleAction(ACTION.CHANGE_TEXT, uuid, e.target.value)}
-      />
+      {geometry === GEOMETRY.Text3D || geometry === GEOMETRY.Text ? (
+        <InputTextArea
+          label="text"
+          value={text}
+          handleChange={(e) => handleAction(ACTION.CHANGE_TEXT, uuid, e.target.value)}
+        />
+      ) : null}
+
+      {geometry === GEOMETRY.Box ? (
+        <InputNumberMultiple
+          label="args"
+          step="0.1"
+          symbols={['w', 'h', 'd']}
+          values={args}
+          handleChanges={[
+            (e) => handleAction(ACTION.CHANGE_ARGS, uuid, e.target.value, 0),
+            (e) => handleAction(ACTION.CHANGE_ARGS, uuid, e.target.value, 1),
+            (e) => handleAction(ACTION.CHANGE_ARGS, uuid, e.target.value, 2),
+          ]}
+        />
+      ) : null}
 
       <InputCheckbox label="wireframe" handleChange={(e) => console.log('CHANGE WIREFRAME')} />
 

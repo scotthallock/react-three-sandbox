@@ -3,9 +3,9 @@ import ControlPanelButtons from './ControlPanelButtons';
 import InputCheckbox from './InputCheckbox';
 import InputColor from './InputColor';
 import InputNumber from './InputNumber';
-import InputNumberMultiple from './InputNumberMultiple';
+import InputNumberMultiple from './InputNumberMultiple'; // should we make the grid size 2 numbers?
 
-import { SCENE_ACTION } from '../../utils/types';
+import { SCENE_ACTION } from '../../../utils/types';
 
 const ControlPanelScene = (props) => {
   const {

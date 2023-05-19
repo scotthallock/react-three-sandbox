@@ -1,5 +1,3 @@
-import { ACTION } from '../../utils/types';
-
 const ControlPanelButtons = ({
   name,
   handleNameChange,
