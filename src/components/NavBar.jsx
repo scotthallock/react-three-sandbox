@@ -1,6 +1,5 @@
 import Logo from './Logo';
 import NavButton from './NavButton';
-import DropdownMenu from './DropdownMenu';
 
 import { LIGHT, GEOMETRY } from '../../utils/types';
 
@@ -44,30 +43,26 @@ const NavBar = ({ handleAction }) => {
         </div>
         <div className="flex gap-[10px] justify-end">
           <NavButton text="+ light">
-            <DropdownMenu>
-              {lightOptions.map((option, i) => (
-                <button
-                  key={`light-${i}`}
-                  className="hover:text-emerald-500 whitespace-nowrap text-right"
-                  onClick={() => console.log('You clicked', option)}
-                >
-                  {option}
-                </button>
-              ))}
-            </DropdownMenu>
+            {lightOptions.map((option, i) => (
+              <button
+                key={`light-${i}`}
+                className="hover:text-emerald-500 whitespace-nowrap text-right"
+                onClick={() => console.log('You clicked', option)}
+              >
+                {option}
+              </button>
+            ))}
           </NavButton>
           <NavButton text="+ geometry">
-            <DropdownMenu>
-              {geometryOptions.map((option, i) => (
-                <button
-                  key={`geometry-${i}`}
-                  className="hover:text-emerald-500 whitespace-nowrap text-right"
-                  onClick={() => console.log('You clicked', option)}
-                >
-                  {option}
-                </button>
-              ))}
-            </DropdownMenu>
+            {geometryOptions.map((option, i) => (
+              <button
+                key={`geometry-${i}`}
+                className="hover:text-emerald-500 whitespace-nowrap text-right"
+                onClick={() => console.log('You clicked', option)}
+              >
+                {option}
+              </button>
+            ))}
           </NavButton>
           <NavButton text="show hints" handleClick={() => console.log('clicked show hints')} />
         </div>
