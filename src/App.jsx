@@ -5,32 +5,17 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls, GizmoHelper, GizmoViewport, useHelper } from '@react-three/drei';
 
 import GridModel from './components/models/GridModel';
-import Text3DModel from './components/models/Text3DModel';
-import TextModel from './components/models/TextModel';
-import BoxModel from './components/models/BoxModel';
-import SphereModel from './components/models/SphereModel';
+import LightCollection from './components/lights/LightCollection';
+import ModelCollection from './components/models/ModelCollection';
 
-import AmbientLight from './components/lights/AmbientLight';
-import DirectionalLight from './components/lights/DirectionalLight';
-import SpotLight from './components/lights/SpotLight';
-import PointLight from './components/lights/PointLight';
-
+import NavBar from './components/NavBar';
 import ControlPanelContainer from './components/controls/ControlPanelContainer';
 
 import initialScene from '../utils/initialScene';
 import initialLights from '../utils/initialLights';
 import initialModels from '../utils/initialModels';
 
-import {
-  LIGHT,
-  AXIS,
-  GEOMETRY,
-  MATERIAL,
-  ACTION,
-  SCENE_ACTION,
-  LIGHT_ACTION,
-} from '../utils/types';
-import Logo from './components/Logo';
+import { AXIS, GEOMETRY, MATERIAL, ACTION, SCENE_ACTION, LIGHT_ACTION } from '../utils/types';
 
 function App() {
   const [scene, setScene] = useState(initialScene);
@@ -179,53 +164,7 @@ function App() {
 
   return (
     <main>
-      <nav className="m-4 flex flex-row items-center gap-4 text-gray-400 font-mono font-medium">
-        <Logo />
-
-        <div className="flex flex-col">
-          <div>
-            <div className="flex flex-row gap-4">
-              <span className="text-gray-200">a really cool scene</span>
-              <button className="fill-gray-200 hover:fill-emerald-500">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 512 512"
-                  width="18px"
-                  height="18px"
-                >
-                  <path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z" />
-                </svg>
-              </button>
-            </div>
-          </div>
-          <span className="text-[11px]">scotth</span>
-        </div>
-
-        <div className="ml-auto text-[11px] flex flex-col gap-[10px]">
-          <div className="flex gap-[10px] justify-end">
-            <button className="bg-zinc-900 text-gray-200 hover:text-emerald-500 rounded-[10px] px-4 h-[24px]">
-              save
-            </button>
-            <button className="bg-zinc-900 text-gray-200 hover:text-emerald-500 rounded-[10px] px-4 h-[24px]">
-              export
-            </button>
-            <button className="bg-zinc-900 text-gray-200 hover:text-emerald-500 rounded-[10px] px-4 h-[24px]">
-              profile
-            </button>
-          </div>
-          <div className="flex gap-[10px] justify-end">
-            <button className="bg-zinc-900 text-gray-200 hover:text-emerald-500 rounded-[10px] px-4 h-[24px] shrink-0">
-              + light
-            </button>
-            <button className="bg-zinc-900 text-gray-200 hover:text-emerald-500 rounded-[10px] px-4 h-[24px] shrink-0">
-              + geometry
-            </button>
-            <button className="bg-zinc-900 text-gray-200 hover:text-emerald-500 rounded-[10px] px-4 h-[24px] shrink-0">
-              show hints
-            </button>
-          </div>
-        </div>
-      </nav>
+      <NavBar />
       <div
         id="canvas-container"
         className="aspect-[1.91/1] m-4 rounded-[10px] overflow-hidden shadow-md"
@@ -241,35 +180,9 @@ function App() {
             </GizmoHelper>
           ) : null}
 
-          {Object.values(lights).map((light) => {
-            switch (light.type) {
-              case LIGHT.Ambient:
-                return <AmbientLight key={light.uuid} {...light} />;
-              case LIGHT.DirectionalLight:
-                return <DirectionalLight key={light.uuid} {...light} />;
-              case LIGHT.SpotLight:
-                return <SpotLight key={light.uuid} {...light} />;
-              case LIGHT.PointLight:
-                return <PointLight key={light.uuid} {...light} />;
-              default:
-                return null;
-            }
-          })}
+          <LightCollection lights={lights} />
 
-          {Object.values(models).map((model) => {
-            switch (model.geometry) {
-              case GEOMETRY.Text3D:
-                return <Text3DModel key={model.uuid} {...model} />;
-              case GEOMETRY.Text:
-                return <TextModel key={model.uuid} {...model} />;
-              case GEOMETRY.Box:
-                return <BoxModel key={model.uuid} {...model} />;
-              case GEOMETRY.Sphere:
-                return <SphereModel key={model.uuid} {...model} />;
-              default:
-                return null;
-            }
-          })}
+          <ModelCollection models={models} />
 
           <OrbitControls makeDefault enableDamping={false} regress />
         </Canvas>
