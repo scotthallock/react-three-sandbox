@@ -1,4 +1,5 @@
-import { Text3D } from '@react-three/drei';
+import { Text3D, Center } from '@react-three/drei';
+import interFont from '../../assets/Inter_Regular.json';
 import { useMemo } from 'react';
 import { createThreeMaterial } from '../../../utils/helpers';
 
@@ -17,22 +18,24 @@ const Text3DModel = (props) => {
   }, [material, color]);
 
   return (
-    <Text3D
-      material={memoMaterial}
-      scale={scale}
-      position={position}
-      rotation={rotationRad}
-      font="./src/assets/Inter_Regular.json"
-      lineHeight={0.7}
-      curveSegments={12}
-      bevelEnabled
-      bevelThickness={0.01}
-      bevelSize={0.01}
-      bevelOffset={0}
-      bevelSegments={5}
-    >
-      {text}
-    </Text3D>
+    <Center bottom onCentered={() => {}}>
+      <Text3D
+        material={memoMaterial}
+        scale={scale}
+        position={position}
+        rotation={rotationRad}
+        font={interFont}
+        lineHeight={0.7}
+        curveSegments={12}
+        bevelEnabled
+        bevelThickness={0.01}
+        bevelSize={0.01}
+        bevelOffset={0}
+        bevelSegments={5}
+      >
+        {text}
+      </Text3D>
+    </Center>
   );
 };
 

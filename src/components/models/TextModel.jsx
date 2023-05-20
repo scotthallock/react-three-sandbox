@@ -15,8 +15,10 @@ const TextModel = (props) => {
       scale={scale}
       position={position}
       rotation={rotationRad}
-      font="./src/assets/Inter_Regular.json"
-      fontSize={1}
+      font={'https://fonts.gstatic.com/s/roboto/v18/KFOmCnqEu92Fr1Mu4mxM.woff'}
+      fontSize={1.5}
+      anchorX="center"
+      anchorY="center"
     >
       {text}
     </Text>
