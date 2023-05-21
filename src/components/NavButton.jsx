@@ -1,5 +1,4 @@
 import { useRef, useEffect } from 'react';
-// https://www.npmjs.com/package/react-transition-state
 import { useTransition } from 'react-transition-state';
 
 const NavButton = ({ children, text }) => {

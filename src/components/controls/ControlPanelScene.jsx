@@ -1,10 +1,7 @@
-import { useState } from 'react';
-import ControlPanelButtons from './ControlPanelButtons';
+import ControlPanel from './ControlPanel';
 import InputCheckbox from './InputCheckbox';
 import InputColor from './InputColor';
 import InputNumber from './InputNumber';
-import InputNumberMultiple from './InputNumberMultiple'; // should we make the grid size 2 numbers?
-
 import { SCENE_ACTION } from '../../../utils/types';
 
 const ControlPanelScene = (props) => {
@@ -21,26 +18,8 @@ const ControlPanelScene = (props) => {
     handleSceneAction,
   } = props;
 
-  const [minimized, setMinimized] = useState(false);
-  const toggleMinimize = () => setMinimized(!minimized);
-
-  if (minimized) {
-    return (
-      <div
-        className="w-[24px] shrink-0 min-h-[280px] py-[10px] bg-zinc-900 text-gray-400 font-mono text-[11px] gap-[6px] flex justify-center rounded-[10px] cursor-pointer shadow-md hover:text-emerald-500"
-        onClick={toggleMinimize}
-      >
-        <span className="[writing-mode:vertical-lr] [text-orientation:mixed] whitespace-nowrap truncate">
-          scene controls
-        </span>
-      </div>
-    );
-  }
-
   return (
-    <div className="w-min py-[10px] rounded-[10px] bg-zinc-900 text-gray-400 font-mono text-[11px] flex flex-col gap-[6px] shadow-md">
-      <ControlPanelButtons editable={false} name="scene controls" toggleMinimize={toggleMinimize} />
-
+    <ControlPanel name="scene controls" editable={false}>
       <InputColor
         label="background"
         value={backgroundColor}
@@ -89,6 +68,7 @@ const ControlPanelScene = (props) => {
 
       <InputNumber
         label="fade dist"
+        step="5"
         value={gridFadeDistance}
         handleChange={(e) => handleSceneAction(SCENE_ACTION.GRID_FADE_DISTANCE, e.target.value)}
       />
@@ -98,7 +78,7 @@ const ControlPanelScene = (props) => {
         value={gridYLevel}
         handleChange={(e) => handleSceneAction(SCENE_ACTION.GRID_Y_LEVEL, e.target.value)}
       />
-    </div>
+    </ControlPanel>
   );
 };
 

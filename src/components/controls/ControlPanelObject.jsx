@@ -1,15 +1,13 @@
-import { useState } from 'react';
-import ControlPanelButtons from './ControlPanelButtons';
+import ControlPanel from './ControlPanel';
 import InputNumber from './InputNumber';
 import InputNumberMultiple from './InputNumberMultiple';
 import InputColor from './InputColor';
 import InputTextArea from './InputTextArea';
 import InputCheckbox from './InputCheckbox';
 import InputSelect from './InputSelect';
-
 import { GEOMETRY, MATERIAL, ACTION, AXIS } from '../../../utils/types';
 
-const ControlPanel = (props) => {
+const ControlPanelObject = (props) => {
   const {
     uuid,
     name,
@@ -24,32 +22,13 @@ const ControlPanel = (props) => {
     handleAction,
   } = props;
 
-  const [minimized, setMinimized] = useState(false);
-  const toggleMinimize = () => setMinimized(!minimized);
-
-  if (minimized) {
-    return (
-      <div
-        className="w-[24px] shrink-0 min-h-[280px] py-[10px] bg-zinc-900 text-gray-400 font-mono text-[11px] gap-[6px] flex justify-center rounded-[10px] cursor-pointer shadow-md hover:text-emerald-500"
-        onClick={toggleMinimize}
-      >
-        <span className="[writing-mode:vertical-lr] [text-orientation:mixed] whitespace-nowrap truncate">
-          {name}
-        </span>
-      </div>
-    );
-  }
-
   return (
-    <div className="w-min py-[10px] rounded-[10px] bg-zinc-900 text-gray-400 font-mono text-[11px] flex flex-col gap-[6px] shadow-md">
-      <ControlPanelButtons
-        name={name}
-        handleNameChange={(e) => handleAction(ACTION.CHANGE_NAME, uuid, e.target.value)}
-        handleDelete={() => handleAction(ACTION.DELETE_OBJECT, uuid)}
-        handleDuplicate={() => handleAction(ACTION.DUPLICATE_OBJECT, uuid)}
-        toggleMinimize={toggleMinimize}
-      />
-
+    <ControlPanel
+      name={name}
+      handleNameChange={(e) => handleAction(ACTION.CHANGE_NAME, uuid, e.target.value)}
+      handleDelete={() => handleAction(ACTION.DELETE_OBJECT, uuid)}
+      handleDuplicate={() => handleAction(ACTION.DUPLICATE_OBJECT, uuid)}
+    >
       <InputSelect
         label="geometry"
         options={[GEOMETRY.Text3D, GEOMETRY.Text, GEOMETRY.Box, GEOMETRY.Sphere, GEOMETRY.Cone]}
@@ -130,8 +109,8 @@ const ControlPanel = (props) => {
           (e) => handleAction(ACTION.CHANGE_ROTATION, uuid, e.target.value, AXIS.Z),
         ]}
       />
-    </div>
+    </ControlPanel>
   );
 };
 
-export default ControlPanel;
+export default ControlPanelObject;
