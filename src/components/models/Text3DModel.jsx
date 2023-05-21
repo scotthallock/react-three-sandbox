@@ -18,12 +18,9 @@ const Text3DModel = (props) => {
   }, [material, color]);
 
   return (
-    <Center bottom onCentered={() => {}}>
+    <Center bottom onCentered={() => {}} scale={scale} position={position} rotation={rotationRad}>
       <Text3D
         material={memoMaterial}
-        scale={scale}
-        position={position}
-        rotation={rotationRad}
         font={interFont}
         lineHeight={0.7}
         curveSegments={12}
