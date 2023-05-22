@@ -2,6 +2,7 @@ import ControlPanel from './ControlPanel';
 import InputCheckbox from './InputCheckbox';
 import InputColor from './InputColor';
 import InputNumber from './InputNumber';
+import InputNumberMultiple from './InputNumberMultiple';
 import { SCENE_ACTION } from '../../../utils/types';
 
 const ControlPanelScene = (props) => {
@@ -39,11 +40,15 @@ const ControlPanelScene = (props) => {
         handleChange={(e) => handleSceneAction(SCENE_ACTION.SHOW_GRID)}
       />
 
-      <InputNumber
+      <InputNumberMultiple
         label="grid size"
-        value={gridSize}
-        step={1}
-        handleChange={(e) => handleSceneAction(SCENE_ACTION.GRID_SIZE, e.target.value)}
+        symbols={['x', 'y']}
+        values={gridSize}
+        step="1"
+        handleChanges={[
+          (e) => handleSceneAction(SCENE_ACTION.GRID_SIZE, e.target.value, 0),
+          (e) => handleSceneAction(SCENE_ACTION.GRID_SIZE, e.target.value, 1),
+        ]}
       />
 
       <InputCheckbox

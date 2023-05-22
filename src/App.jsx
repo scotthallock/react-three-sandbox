@@ -22,7 +22,7 @@ function App() {
   const [lights, setLights] = useState(initialLights);
   const [models, setModels] = useState(initialModels);
 
-  const handleSceneAction = (action, value) => {
+  const handleSceneAction = (action, value, argNo) => {
     const newScene = structuredClone(scene);
 
     switch (action) {
@@ -36,7 +36,7 @@ function App() {
         newScene.showGrid = !newScene.showGrid;
         break;
       case SCENE_ACTION.GRID_SIZE:
-        newScene.gridArgs = [value, value];
+        newScene.gridSize[argNo] = value;
         break;
       case SCENE_ACTION.GRID_INFINITE:
         newScene.gridInfinite = !newScene.gridInfinite;

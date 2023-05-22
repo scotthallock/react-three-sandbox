@@ -10,7 +10,7 @@ const GridModel = ({
 }) => (
   <Grid
     position={[0, gridYLevel, 0]}
-    args={[gridSize, gridSize]}
+    args={gridSize}
     infiniteGrid={gridInfinite}
     cellColor={gridCellColor}
     sectionColor={gridSectionColor}

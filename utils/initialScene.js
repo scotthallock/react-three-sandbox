@@ -1,11 +1,11 @@
 const initialScene = {
   backgroundColor: '#082f49',
-  showGizmo: true,
+  showGizmo: false,
   showGrid: true,
-  gridSize: 10,
+  gridSize: [10, 6],
   gridCellColor: '#aaaaaa',
   gridSectionColor: '#2080ff',
-  gridInfinite: true,
+  gridInfinite: false,
   gridFadeDistance: 100,
   gridYLevel: -1,
 };
