@@ -16,10 +16,12 @@ import initialLights from '../utils/initialLights';
 import initialModels from '../utils/initialModels';
 import defaultModels from '../utils/defaultModels';
 
+import { getAllScenes, getSceneById } from './actions/actions';
+
 import { AXIS, GEOMETRY, MATERIAL, ACTION, SCENE_ACTION, LIGHT_ACTION } from '../utils/types';
-import { STATE } from 'three-stdlib';
 
 function App() {
+  const [sceneId] = useState(uuidv4());
   const [scene, setScene] = useState(initialScene);
   const [lights, setLights] = useState(initialLights);
   const [models, setModels] = useState(initialModels);
@@ -172,7 +174,13 @@ function App() {
 
   return (
     <main>
-      <NavBar addNewModel={addNewModel} />
+      <NavBar
+        addNewModel={addNewModel}
+        sceneId={sceneId}
+        scene={scene}
+        lights={lights}
+        models={models}
+      />
       <div
         id="canvas-container"
         className="aspect-[1.91/1] m-4 rounded-[10px] overflow-hidden shadow-md"
@@ -204,6 +212,10 @@ function App() {
         models={models}
         handleAction={handleAction}
       />
+
+      <div className="m-4 bg-zinc-500">
+        <button onClick={getAllScenes}>GET ALL SCENES</button>
+      </div>
     </main>
   );
 }

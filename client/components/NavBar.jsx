@@ -1,7 +1,10 @@
 import Logo from './Logo';
 import NavButton from './NavButton';
+import NavDropdown from './NavDropdown';
 
 import { LIGHT, GEOMETRY } from '../../utils/types';
+
+import { sayHello, saveScene } from '../actions/actions';
 
 const lightOptions = [LIGHT.DirectionalLight, LIGHT.SpotLight, LIGHT.PointLight];
 const geometryOptions = [
@@ -12,7 +15,8 @@ const geometryOptions = [
   GEOMETRY.Cone,
 ];
 
-const NavBar = ({ addNewModel }) => {
+const NavBar = ({ addNewModel, sceneId, scene, lights, models }) => {
+  console.log(models);
   return (
     <nav className="m-4 flex flex-row items-center gap-4 text-gray-400 font-mono font-medium">
       <Logo />
@@ -37,12 +41,15 @@ const NavBar = ({ addNewModel }) => {
 
       <div className="ml-auto text-[11px] flex flex-col gap-[10px]">
         <div className="flex gap-[10px] justify-end">
-          <NavButton text="save" handleClick={() => console.log('clicked save')} />
+          <NavButton
+            text="save"
+            handleClick={() => saveScene({ sceneId, scene, lights, models })}
+          />
           <NavButton text="export" handleClick={() => console.log('clicked export')} />
-          <NavButton text="profile" handleClick={() => console.log('clicked profile')} />
+          <NavButton text="profile" handleClick={sayHello} />
         </div>
         <div className="flex gap-[10px] justify-end">
-          <NavButton text="+ light">
+          <NavDropdown text="+ light">
             {lightOptions.map((option, i) => (
               <button
                 key={`light-${i}`}
@@ -52,8 +59,8 @@ const NavBar = ({ addNewModel }) => {
                 {option}
               </button>
             ))}
-          </NavButton>
-          <NavButton text="+ geometry">
+          </NavDropdown>
+          <NavDropdown text="+ geometry">
             {geometryOptions.map((geometry, i) => (
               <button
                 key={`geometry-${i}`}
@@ -63,8 +70,8 @@ const NavBar = ({ addNewModel }) => {
                 {geometry}
               </button>
             ))}
-          </NavButton>
-          <NavButton text="show hints" handleClick={() => console.log('clicked show hints')} />
+          </NavDropdown>
+          <NavDropdown text="show hints" handleClick={() => console.log('clicked show hints')} />
         </div>
       </div>
     </nav>
