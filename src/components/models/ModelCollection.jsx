@@ -3,6 +3,7 @@ import Text3DModel from './Text3DModel';
 import TextModel from './TextModel';
 import BoxModel from './BoxModel';
 import SphereModel from './SphereModel';
+import ConeModel from './ConeModel';
 
 const ModelCollection = ({ models }) =>
   Object.values(models).map((model) => {
@@ -15,6 +16,8 @@ const ModelCollection = ({ models }) =>
         return <BoxModel key={model.uuid} {...model} />;
       case GEOMETRY.Sphere:
         return <SphereModel key={model.uuid} {...model} />;
+      case GEOMETRY.Cone:
+        return <ConeModel key={model.uuid} {...model} />;
       default:
         return null;
     }

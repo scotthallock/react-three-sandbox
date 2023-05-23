@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { createThreeMaterial } from '../../../utils/helpers';
 
-const SphereModel = (props) => {
+const ConeModel = (props) => {
   const { args, material, color, scale, position, rotationRad } = props;
 
   const memoMaterial = useMemo(() => {
@@ -10,9 +10,9 @@ const SphereModel = (props) => {
 
   return (
     <mesh material={memoMaterial} scale={scale} position={position} rotation={rotationRad}>
-      <sphereGeometry args={args} />
+      <coneGeometry args={args} />
     </mesh>
   );
 };
 
-export default SphereModel;
+export default ConeModel;

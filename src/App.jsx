@@ -14,8 +14,10 @@ import ControlPanelContainer from './components/controls/ControlPanelContainer';
 import initialScene from '../utils/initialScene';
 import initialLights from '../utils/initialLights';
 import initialModels from '../utils/initialModels';
+import defaultModels from '../utils/defaultModels';
 
 import { AXIS, GEOMETRY, MATERIAL, ACTION, SCENE_ACTION, LIGHT_ACTION } from '../utils/types';
+import { STATE } from 'three-stdlib';
 
 function App() {
   const [scene, setScene] = useState(initialScene);
@@ -106,18 +108,23 @@ function App() {
     setLights(newLights);
   };
 
+  const addNewModel = (geometry) => {
+    const newObject = defaultModels[geometry];
+    if (!newObject) throw new Error(`No defaults are configured for ${geometry}`);
+    const newUuid = uuidv4();
+    newObject.uuid = newUuid;
+    setModels({ ...models, [newUuid]: newObject });
+  };
+
   const handleAction = (action, uuid, value, argNo) => {
     if (!models[uuid]) throw new Error('uuid invalid');
     const newModels = structuredClone(models);
 
     switch (action) {
-      case ACTION.ADD_OBJECT:
-        console.log('ADD_OBJECT');
-        break;
       case ACTION.DELETE_OBJECT:
         delete newModels[uuid];
         break;
-      case ACTION.DUPLICATE_OBJECT:
+      case ACTION.DUPLICATE_OBJECT: {
         const duplicate = structuredClone(newModels[uuid]);
         const newUuid = uuidv4();
         duplicate.uuid = newUuid;
@@ -125,6 +132,7 @@ function App() {
         duplicate.position[AXIS.Z] += 0.5;
         newModels[newUuid] = duplicate;
         break;
+      }
       case ACTION.CHANGE_NAME:
         newModels[uuid].name = value;
         break;
@@ -164,7 +172,7 @@ function App() {
 
   return (
     <main>
-      <NavBar />
+      <NavBar addNewModel={addNewModel} />
       <div
         id="canvas-container"
         className="aspect-[1.91/1] m-4 rounded-[10px] overflow-hidden shadow-md"

@@ -12,7 +12,7 @@ const geometryOptions = [
   GEOMETRY.Cone,
 ];
 
-const NavBar = ({ handleAction }) => {
+const NavBar = ({ addNewModel }) => {
   return (
     <nav className="m-4 flex flex-row items-center gap-4 text-gray-400 font-mono font-medium">
       <Logo />
@@ -54,13 +54,13 @@ const NavBar = ({ handleAction }) => {
             ))}
           </NavButton>
           <NavButton text="+ geometry">
-            {geometryOptions.map((option, i) => (
+            {geometryOptions.map((geometry, i) => (
               <button
                 key={`geometry-${i}`}
                 className="hover:text-emerald-500 whitespace-nowrap text-right"
-                onClick={() => console.log('You clicked', option)}
+                onClick={() => addNewModel(geometry)}
               >
-                {option}
+                {geometry}
               </button>
             ))}
           </NavButton>
