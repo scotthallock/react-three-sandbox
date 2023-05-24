@@ -45,7 +45,21 @@ const NavBar = ({ addNewModel, sceneId, scene, lights, models }) => {
             text="save"
             handleClick={() => saveScene({ sceneId, scene, lights, models })}
           />
-          <NavButton text="export" handleClick={() => console.log('clicked export')} />
+          <NavButton
+            text="export"
+            handleClick={() => {
+              const canvasContainer = document.getElementById('canvas-container');
+              const canvas = document.querySelector('canvas');
+
+              console.log(canvas.offsetWidth, canvas.offsetHeight);
+              canvasContainer.classList.remove('w-full', 'h-full');
+              canvasContainer.classList.add('w-[1200px]', 'h-[630px]');
+              console.log('did it change size?');
+
+              const { width, height } = canvas.getBoundingClientRect();
+              console.log({ width, height });
+            }}
+          />
           <NavButton text="profile" handleClick={sayHello} />
         </div>
         <div className="flex gap-[10px] justify-end">

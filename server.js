@@ -7,10 +7,7 @@ const userController = require('./server/controllers/userController');
 
 const app = express();
 
-const { PORT = 3000 } = process.env;
-
-const MONGO_URI = process.env.MONGO_URI;
-console.log(MONGO_URI);
+const { PORT = 3000, MONGO_URI } = process.env;
 
 if (!MONGO_URI) {
   throw new Error('MONGO_URI environment variable is not defined. Cannot connect to database.');
@@ -25,11 +22,11 @@ mongoose
   .then(() => console.log('✅ Connected to Mongo DB'))
   .catch((err) => console.log(err));
 
-app.use(express.json());
+app.use(express.json({ limit: '2mb' }));
 app.use(express.static('dist'));
 app.get('/', (req, res) => res.sendFile('dist/index.html'));
 
-// Test route
+// Just a test route
 app.get('/api/hello', (req, res) => res.json({ greeting: 'hello' }));
 
 // Get all of the user's scenes

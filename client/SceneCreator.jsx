@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { v4 as uuidv4 } from 'uuid';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, GizmoHelper, GizmoViewport, useHelper } from '@react-three/drei';
 
@@ -20,11 +20,14 @@ import { getAllScenes, getSceneById } from './actions/actions';
 
 import { AXIS, GEOMETRY, MATERIAL, ACTION, SCENE_ACTION, LIGHT_ACTION } from '../utils/types';
 
-function App() {
+const SceneCreator = () => {
   const [sceneId] = useState(uuidv4());
   const [scene, setScene] = useState(initialScene);
   const [lights, setLights] = useState(initialLights);
   const [models, setModels] = useState(initialModels);
+
+  const canvasRef = useRef(null);
+  const wrapperRef = useRef(null);
 
   const handleSceneAction = (action, value, argNo) => {
     const newScene = structuredClone(scene);
@@ -172,6 +175,18 @@ function App() {
     setModels(newModels);
   };
 
+  // useEffect(() => {
+  //   console.log('useEffect');
+  //   const handleResize = () => {
+  //     console.log(wrapperRef.current.offsetWidth);
+  //   };
+
+  //   window.addEventListener('resize', handleResize);
+  //   return () => {
+  //     window.removeEventListener('resize', handleResize);
+  //   };
+  // });
+
   return (
     <main>
       <NavBar
@@ -181,27 +196,30 @@ function App() {
         lights={lights}
         models={models}
       />
-      <div
-        id="canvas-container"
-        className="aspect-[1.91/1] m-4 rounded-[10px] overflow-hidden shadow-md"
-      >
-        <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
-          <color attach="background" args={[scene.backgroundColor]} />
+      <div ref={wrapperRef} className="aspect-1.91/1 m-4 rounded-[10px] shadow-md overflow-hidden">
+        <div id="canvas-container" className="h-full w-full">
+          <Canvas
+            ref={canvasRef}
+            gl={{ preserveDrawingBuffer: true }}
+            camera={{ position: [0, 0, 5], fov: 75 }}
+          >
+            <color attach="background" args={[scene.backgroundColor]} />
 
-          {scene.showGrid ? <GridModel {...scene} /> : null}
+            {scene.showGrid ? <GridModel {...scene} /> : null}
 
-          {scene.showGizmo ? (
-            <GizmoHelper alignment="bottom-left" margin={[80, 80]}>
-              <GizmoViewport axisColors={['#9d4b4b', '#2f7f4f', '#3b5b9d']} labelColor="white" />
-            </GizmoHelper>
-          ) : null}
+            {scene.showGizmo ? (
+              <GizmoHelper alignment="bottom-left" margin={[80, 80]}>
+                <GizmoViewport axisColors={['#9d4b4b', '#2f7f4f', '#3b5b9d']} labelColor="white" />
+              </GizmoHelper>
+            ) : null}
 
-          <LightCollection lights={lights} />
+            <LightCollection lights={lights} />
 
-          <ModelCollection models={models} />
+            <ModelCollection models={models} />
 
-          <OrbitControls makeDefault enableDamping={false} regress />
-        </Canvas>
+            <OrbitControls makeDefault enableDamping={false} regress />
+          </Canvas>
+        </div>
       </div>
 
       <ControlPanelContainer
@@ -213,11 +231,13 @@ function App() {
         handleAction={handleAction}
       />
 
-      <div className="m-4 bg-zinc-500">
+      <div className="m-4 bg-zinc-500 flex gap-4">
         <button onClick={getAllScenes}>GET ALL SCENES</button>
+        <button onClick={() => console.log(canvasRef.current)}>??REF??</button>
+        <button onClick={async () => {}}>SEND REQUEST</button>
       </div>
     </main>
   );
-}
+};
 
-export default App;
+export default SceneCreator;

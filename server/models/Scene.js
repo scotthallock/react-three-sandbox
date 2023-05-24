@@ -6,6 +6,9 @@ const sceneSchema = new mongoose.Schema({
   lights: {},
   models: {},
   image: String,
+  author: String,
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
 });
 
 module.exports = mongoose.model('Scene', sceneSchema);

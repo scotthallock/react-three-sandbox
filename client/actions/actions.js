@@ -15,12 +15,17 @@ export const sayHello = async () => {
 // The scene is defined by 4 pieces of state: sceneId, scene, lights, models
 export const saveScene = async ({ sceneId, scene, lights, models }) => {
   try {
+    const canvas = document.querySelector('canvas');
+    console.log('SNAPSHOT: ', canvas.offsetWidth, canvas.offsetHeight);
+    const pngData = canvas.toDataURL('image/png');
+    const base64Data = pngData.replace(/^data:image\/png;base64,/, '');
+
     const response = await fetch('/api/scene', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ sceneId, scene, lights, models }),
+      body: JSON.stringify({ sceneId, scene, lights, models, image: base64Data }),
     });
 
     const data = await response.json();
