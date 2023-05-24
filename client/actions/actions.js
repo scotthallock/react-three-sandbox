@@ -58,6 +58,43 @@ export const getSceneById = async (id) => {
   }
 };
 
+export const signup = async ({ username, email, password }) => {
+  try {
+    const response = await fetch(`api/signup`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username,
+        email,
+        password: atob(password),
+      }),
+    });
+    const data = await response.json();
+    console.log(data);
+    if (data.err) return data.err.message;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const login = async ({ usernameOrEmail, password }) => {
+  try {
+    const response = await fetch(`api/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        usernameOrEmail,
+        password: atob(password),
+      }),
+    });
+    const data = await response.json();
+    console.log(data);
+    if (data.err) return data.err.message;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 // For now, get it working with one user
 // Then later we can add user authentication
 // Where the user data is in a cookie
