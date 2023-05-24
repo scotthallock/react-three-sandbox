@@ -4,21 +4,21 @@ import { useState, useRef, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, GizmoHelper, GizmoViewport, useHelper } from '@react-three/drei';
 
-import GridModel from './components/models/GridModel';
-import LightCollection from './components/lights/LightCollection';
-import ModelCollection from './components/models/ModelCollection';
+import GridModel from '../components/models/GridModel';
+import LightCollection from '../components/lights/LightCollection';
+import ModelCollection from '../components/models/ModelCollection';
 
-import NavBar from './components/NavBar';
-import ControlPanelContainer from './components/controls/ControlPanelContainer';
+import NavBar from '../components/NavBar';
+import ControlPanelContainer from '../components/controls/ControlPanelContainer';
 
-import initialScene from '../utils/initialScene';
-import initialLights from '../utils/initialLights';
-import initialModels from '../utils/initialModels';
-import defaultModels from '../utils/defaultModels';
+import initialScene from '../../utils/initialScene';
+import initialLights from '../../utils/initialLights';
+import initialModels from '../../utils/initialModels';
+import defaultModels from '../../utils/defaultModels';
 
-import { getAllScenes, getSceneById } from './actions/actions';
+import { getAllScenes, getSceneById } from '../actions/actions';
 
-import { AXIS, GEOMETRY, MATERIAL, ACTION, SCENE_ACTION, LIGHT_ACTION } from '../utils/types';
+import { AXIS, GEOMETRY, MATERIAL, ACTION, SCENE_ACTION, LIGHT_ACTION } from '../../utils/types';
 
 const SceneCreator = () => {
   const [sceneId] = useState(uuidv4());
