@@ -1,8 +1,10 @@
 const Scene = require('../models/Scene');
-// const fsp = require('fs').promises;
-// const path = require('path');
+const fsp = require('fs').promises;
+const path = require('path');
 
 const sceneController = {};
+
+const UPLOADS_DIRECTORY = path.join(__dirname, '../../uploads');
 
 sceneController.getScenes = async (req, res, next) => {
   const { username } = req.query;
@@ -10,7 +12,8 @@ sceneController.getScenes = async (req, res, next) => {
     if (!username) {
       throw new Error('Missing `username` query param in request');
     }
-    const scenes = await Scene.find({ author: req.query.username });
+    // Don't send the string (huge string) back to the client
+    const scenes = await Scene.find({ author: req.query.username }, '-image');
     res.locals.scenes = scenes;
     return next();
   } catch (err) {
@@ -19,7 +22,6 @@ sceneController.getScenes = async (req, res, next) => {
 };
 
 sceneController.getSceneById = async (req, res, next) => {
-  console.log('get scene by id');
   try {
     const scene = Scene.findOne({ sceneId: req.params.id });
     if (!scene) throw new Error(`Did not find scene with id ${eq.params.id} in database.`);
@@ -39,10 +41,11 @@ sceneController.saveScene = async (req, res, next) => {
       );
     }
 
-    // console.log('saving the image to a temporary file....');
-    // await fsp.writeFile(path.join(__dirname, '../../files/image.txt'), image);
+    console.log('saving the image to a temporary file....');
 
-    console.log(sceneId);
+    const filepath = path.join(UPLOADS_DIRECTORY, `/${sceneId}.png`);
+    await fsp.writeFile(filepath, image, { encoding: 'base64' });
+
     const savedScene = await Scene.findOne({ sceneId });
 
     if (savedScene) {
@@ -54,7 +57,7 @@ sceneController.saveScene = async (req, res, next) => {
       savedScene.image = image;
       savedScene.updatedAt = Date.now();
       await savedScene.save();
-      console.log('UPDATED A SCENE');
+      console.log(`Updated scene ${sceneId}`);
       res.locals.sceneId = sceneId;
       return next();
     } else {
@@ -67,7 +70,7 @@ sceneController.saveScene = async (req, res, next) => {
         lights,
         models,
       });
-      console.log('SAVED A NEW SCENE');
+      console.log(`Saved a new scene ${sceneId}`);
       return next();
     }
   } catch (err) {

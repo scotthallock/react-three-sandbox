@@ -24,19 +24,6 @@ const SceneCreator = () => {
   // Data passed from navigate(path, {state: ...})
   const { state: loadedState } = useLocation();
 
-  if (
-    loadedState &&
-    (!loadedState?.sceneId ||
-      !loadedState?.sceneName ||
-      !loadedState?.scene ||
-      !loadedState?.lights ||
-      !loadedState?.models)
-  ) {
-    console.error(
-      'Missing one of the following while loading a saved scene: sceneId, sceneName, scene, lights, models'
-    );
-  }
-
   // Initialize state
   const [sceneId] = useState(loadedState?.sceneId || uuidv4());
   const [sceneName, setSceneName] = useState(loadedState?.sceneName || `a masterpiece`);

@@ -45,12 +45,13 @@ const SceneCreatorNavBar = (props) => {
         <div className="flex flex-col">
           <div>
             <div className="flex flex-row gap-4">
-              <input
-                type="text"
-                className="text-gray-200 bg-transparent"
-                value={sceneName}
+              <span
+                contentEditable
+                className="text-gray-200 bg-transparent outline-none "
                 onChange={changeSceneName}
-              />
+              >
+                {sceneName}
+              </span>
               <button className="fill-gray-200 hover:fill-emerald-500">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

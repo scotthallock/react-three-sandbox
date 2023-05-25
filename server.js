@@ -29,6 +29,7 @@ mongoose
 app.use(express.json({ limit: '2mb' }));
 app.use(cookieParser());
 app.use(express.static('dist'));
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
 // This is just a test route
 app.get('/api/hello', (req, res) => {

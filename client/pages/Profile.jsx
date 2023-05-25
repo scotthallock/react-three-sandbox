@@ -29,13 +29,6 @@ const Profile = () => {
           <Logo />
         </Link>
         <span className="ml-auto">{username}</span>
-        <Link to="/scene">
-          <div className="rounded-[12px] p-[2px] bg-gradient-to-br from-blue-400 via-cyan-400 to-emerald-500">
-            <div className="rounded-[10px] bg-zinc-900 shadow-900 p-3 hover:text-emerald-500">
-              New Scene
-            </div>
-          </div>
-        </Link>
         <button
           onClick={logout}
           className="bg-zinc-900 shadow-900 rounded-[10px] p-3 hover:text-emerald-500"
