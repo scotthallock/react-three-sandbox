@@ -8,11 +8,9 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.pre('save', async function (next) {
-  console.log('User pre-save middleware');
   const { password } = this;
   const hashedPassword = await bcrypt.hash(password, 10);
   this.password = hashedPassword;
-  console.log({ password, hashedPassword });
   next();
 });
 
