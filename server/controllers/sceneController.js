@@ -4,63 +4,72 @@ const Scene = require('../models/Scene');
 
 const sceneController = {};
 
-sceneController.getAllScenes = async (req, res) => {
+sceneController.getScenes = async (req, res, next) => {
   console.log('get all scenes');
+  console.log('are there query params?');
+  console.log(req.query);
   try {
-    const allScenes = await Scene.find({});
-    return res.json(allScenes);
+    const scenes = await Scene.find({ author: req.query.usernae });
+    res.locals.scenes = scenes;
+    return next();
   } catch (err) {
-    console.error(err);
-    res.status(400).json({ err: { message: err.message } });
+    next(err);
   }
 };
 
-sceneController.getSceneById = async (req, res) => {
+sceneController.getSceneById = async (req, res, next) => {
   console.log('get scene by id');
   try {
     const scene = Scene.findOne({ sceneId: req.params.id });
     if (!scene) throw new Error(`Did not find scene with id ${eq.params.id} in database.`);
-    return res.json(scene);
+    res.locals.scene = scene;
+    return next();
   } catch (err) {
-    console.error(err);
-    res.status(400).json({ err: { message: err.message } });
+    next(err);
   }
 };
 
-sceneController.saveScene = async (req, res) => {
-  console.log('save scene');
+sceneController.saveScene = async (req, res, next) => {
   try {
-    const { sceneId, scene, lights, models, image } = req.body;
-    if (!sceneId || !scene || !lights || !models || !image) {
+    const { sceneId, sceneName, username, scene, lights, models, image } = req.body;
+    if (!sceneId || !sceneName || !username || !scene || !lights || !models || !image) {
       throw new Error(
         'Request body is missing one of the following properties: sceneId, scene, lights, model, image'
       );
     }
 
-    const savedScene = await Scene.findOne({ sceneId });
-
     // console.log('saving the image to a temporary file....');
     // await fsp.writeFile(path.join(__dirname, '../../files/image.txt'), image);
+
+    const savedScene = await Scene.findOne({ sceneId });
 
     if (savedScene) {
       // Update the saved scene
       savedScene.scene = scene;
+      savedScene.sceneName = sceneName;
       savedScene.lights = lights;
       savedScene.models = models;
       savedScene.image = image;
-      savedScene.createdAt = Date.now();
+      savedScene.updatedAt = Date.now();
       await savedScene.save();
       console.log('UPDATED A SCENE');
-      return res.status(201).json({ message: 'successfully updated scene', scene: savedScene });
+      res.locals.sceneId = sceneId;
+      return next();
     } else {
       // Save a new scene
-      const newScene = await Scene.create({ sceneId, scene, lights, models });
+      const newScene = await Scene.create({
+        sceneId,
+        sceneName,
+        author: username,
+        scene,
+        lights,
+        models,
+      });
       console.log('SAVED A NEW SCENE');
-      return res.status(200).json({ message: 'successfully saved new scene', scene: newScene });
+      return next();
     }
   } catch (err) {
-    console.error(err);
-    res.status(400).json({ err: { message: err.message } });
+    next(err);
   }
 };
 

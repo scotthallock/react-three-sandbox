@@ -2,13 +2,20 @@ import { useParams, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import Logo from '../components/Logo';
 
+import { sayHello, getScenesByUser } from '../actions/actions';
+
 const Profile = () => {
   const { username } = useParams();
   const [scenes, setScenes] = useState(null);
 
   useEffect(() => {
-    // fetches the scenes that this user authored
-  });
+    (async () => {
+      const data = await getScenesByUser(username);
+      console.log('GOT SCENES FROM USER');
+      console.log(data);
+      setScenes(data);
+    })();
+  }, []);
 
   return (
     <main className="m-4 flex flex-col gap-4">
@@ -34,14 +41,11 @@ const Profile = () => {
         </Link>
       </div>
 
-      <h1 className="mb-4 text-xl tracking-widest	[text-shadow:_2px_4px_3px_rgb(0_0_0_/_40%)]">
-        YOUR SCENES
+      <h1 className="text-xl tracking-widest [text-shadow:_2px_4px_3px_rgb(0_0_0_/_40%)]">
+        SAVED SCENES
       </h1>
 
-      <div>scene 1</div>
-      <div>scene 2</div>
-      <div>scene 3</div>
-      <div>scene 4</div>
+      {scenes > 0 && <pre>{scenes}</pre>}
     </main>
   );
 };

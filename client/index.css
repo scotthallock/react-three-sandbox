@@ -21,6 +21,7 @@
     background: none;
   }
 
+  /* So the scrollbars are dark */
   :root {
     color-scheme: dark;
   }

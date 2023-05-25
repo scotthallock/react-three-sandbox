@@ -12,7 +12,9 @@ const NavBar = () => {
       <Logo />
       {user?.username ? (
         <>
-          <div className="ml-auto">{user.username}</div>
+          <Link to={`/user/${user.username}`} className="ml-auto">
+            <div className="hover:text-emerald-500">{user.username}</div>
+          </Link>
           <button
             onClick={() => setUser(null)}
             className="bg-zinc-900 shadow-900 rounded-[10px] p-3 hover:text-emerald-500"

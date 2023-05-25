@@ -29,18 +29,20 @@ mongoose
 app.use(express.json({ limit: '2mb' }));
 app.use(cookieParser());
 app.use(express.static('dist'));
-app.get('/*', (req, res) => res.sendFile(path.join(__dirname, 'dist/index.html')));
 
 // This is just a test route
-app.get('/api/hello', (req, res) => res.json({ greeting: 'hello' }));
+app.get('/api/hello', (req, res) => {
+  console.log('saying hello back to the client');
+  res.json({ greeting: 'hello' });
+});
 
-app.get('/api/scene', sceneController.getAllScenes);
+app.get('/api/scene', sceneController.getScenes, (req, res) => res.json(res.locals.scenes));
 
-// app.get('/api/scene?user', sceneController.getAllScenes); // GET a user's scenes
+app.get('/api/scene/:id', sceneController.getSceneById, (req, res) => res.json(res.locals.scene));
 
-app.get('/api/scene/:id', sceneController.getSceneById);
-
-app.post('/api/scene', sceneController.saveScene);
+app.post('/api/scene', sceneController.saveScene, (req, res) =>
+  res.status(201).json({ message: 'successfully updated scene', sceneId })
+);
 
 app.post(
   '/api/login',
@@ -65,6 +67,8 @@ app.post(
       username: res.locals.username,
     })
 );
+
+app.get('/*', (req, res) => res.sendFile(path.join(__dirname, 'dist/index.html')));
 
 // Global error handler
 app.use((err, req, res, next) => {

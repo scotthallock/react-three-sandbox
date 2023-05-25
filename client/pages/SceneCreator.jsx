@@ -26,6 +26,7 @@ const SceneCreator = () => {
     auth: [user, setUser],
   } = useAuth();
   const [sceneId] = useState(uuidv4());
+  const [sceneName, setSceneName] = useState(`${user?.username || 'anonymous user'}'s masterpiece`);
   const [scene, setScene] = useState(initialScene);
   const [lights, setLights] = useState(initialLights);
   const [models, setModels] = useState(initialModels);
@@ -214,6 +215,8 @@ const SceneCreator = () => {
       <SceneCreatorNavBar
         addNewModel={addNewModel}
         sceneId={sceneId}
+        sceneName={sceneName}
+        changeSceneName={(e) => setSceneName(e.target.value)}
         scene={scene}
         lights={lights}
         models={models}
@@ -253,12 +256,6 @@ const SceneCreator = () => {
         models={models}
         handleAction={handleAction}
       />
-
-      <div className="m-4 bg-zinc-500 flex gap-4">
-        <button onClick={getAllScenes}>GET ALL SCENES</button>
-        <button onClick={() => console.log(canvasRef.current)}>??REF??</button>
-        <button onClick={async () => {}}>SEND REQUEST</button>
-      </div>
     </main>
   );
 };

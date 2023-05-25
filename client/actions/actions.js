@@ -3,17 +3,20 @@
  */
 
 export const sayHello = async () => {
+  console.log('HERE');
   try {
     const response = await fetch('/api/hello');
     const data = await response.json();
+    console.log('sayhello');
     console.log(data);
+    return data;
   } catch (err) {
     console.error(err);
   }
 };
 
 // The scene is defined by 4 pieces of state: sceneId, scene, lights, models
-export const saveScene = async ({ sceneId, scene, lights, models }) => {
+export const saveScene = async ({ sceneId, sceneName, username, scene, lights, models }) => {
   try {
     const canvas = document.querySelector('canvas');
     console.log('SNAPSHOT: ', canvas.offsetWidth, canvas.offsetHeight);
@@ -25,7 +28,15 @@ export const saveScene = async ({ sceneId, scene, lights, models }) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ sceneId, scene, lights, models, image: base64Data }),
+      body: JSON.stringify({
+        sceneId,
+        sceneName,
+        username,
+        scene,
+        lights,
+        models,
+        image: base64Data,
+      }),
     });
 
     const data = await response.json();
@@ -42,6 +53,7 @@ export const getAllScenes = async () => {
     const data = await response.json();
     console.log('### ALL SCENES ###');
     console.log(data);
+    return data;
   } catch (err) {
     console.error(err);
   }
@@ -53,6 +65,19 @@ export const getSceneById = async (id) => {
     const data = await response.json();
     console.log('### SCENE BY ID ###');
     console.log(data);
+    return data;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const getScenesByUser = async (username) => {
+  try {
+    const response = await fetch(`/api/scene/?username=${username}`);
+    const data = await response.json();
+    console.log('### SCENES FROM USER ###');
+    console.log(data);
+    return data;
   } catch (err) {
     console.error(err);
   }
