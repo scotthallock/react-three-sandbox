@@ -12,7 +12,8 @@ const App = () => {
     <AuthProvider>
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/scene" element={<SceneCreator />} />
+        <Route path="/scene/" element={<SceneCreator />} />
+        <Route path="/scene/:sceneId" element={<SceneCreator />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/user/:username" element={<Profile />} />

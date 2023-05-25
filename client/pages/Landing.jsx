@@ -1,4 +1,3 @@
-import { useAuth } from '../components/AuthContext';
 import { Link } from 'react-router-dom';
 import NavBar from '../components/NavBar';
 import { Canvas } from '@react-three/fiber';
@@ -6,10 +5,6 @@ import { Stage, Float, OrbitControls, Billboard, Text3D, Center } from '@react-t
 import interFont from '../assets/Inter_Regular.json';
 
 const Landing = () => {
-  const {
-    auth: [user, setUser],
-  } = useAuth();
-
   return (
     <main className="m-4 flex flex-col gap-4">
       <NavBar />
@@ -23,8 +18,9 @@ const Landing = () => {
             <directionalLight position={[2.5, 8, 5]} intensity={1.5} castShadow />
 
             <Float speed={1} rotationIntensity={1} floatingRange={[1, 1.5]}>
-              <mesh position={[2, 0, 2]} castShadow>
-                <boxGeometry args={[1.4, 1.4, 1.4]} />
+              <mesh position={[2, 0, 2]} rotation={[0.78, 0, 0.78]} castShadow>
+                {/* <boxGeometry args={[1.4, 1.4, 1.4]} /> */}
+                <cylinderGeometry args={[0.7, 0.7, 1.4, 32]} />
                 <meshNormalMaterial />
               </mesh>
             </Float>

@@ -1,35 +1,48 @@
 import * as THREE from 'three';
 import { v4 as uuidv4 } from 'uuid';
 import { useAuth } from '../components/AuthContext';
+import { useLocation } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, GizmoHelper, GizmoViewport } from '@react-three/drei';
-
 import GridModel from '../components/models/GridModel';
 import LightCollection from '../components/lights/LightCollection';
 import ModelCollection from '../components/models/ModelCollection';
-
 import SceneCreatorNavBar from '../components/SceneCreatorNavBar';
 import ControlPanelContainer from '../components/controls/ControlPanelContainer';
-
 import initialScene from '../../utils/initialScene';
 import initialLights from '../../utils/initialLights';
 import initialModels from '../../utils/initialModels';
 import defaultModels from '../../utils/defaultModels';
-
-import { getAllScenes, getSceneById } from '../actions/actions';
-
 import { AXIS, GEOMETRY, MATERIAL, ACTION, SCENE_ACTION, LIGHT_ACTION } from '../../utils/types';
 
 const SceneCreator = () => {
   const {
-    auth: [user, setUser],
+    auth: [user],
   } = useAuth();
-  const [sceneId] = useState(uuidv4());
-  const [sceneName, setSceneName] = useState(`${user?.username || 'anonymous user'}'s masterpiece`);
-  const [scene, setScene] = useState(initialScene);
-  const [lights, setLights] = useState(initialLights);
-  const [models, setModels] = useState(initialModels);
+
+  // Data passed from navigate(path, {state: ...})
+  const { state: loadedState } = useLocation();
+
+  if (
+    loadedState &&
+    (!loadedState?.sceneId ||
+      !loadedState?.sceneName ||
+      !loadedState?.scene ||
+      !loadedState?.lights ||
+      !loadedState?.models)
+  ) {
+    console.error(
+      'Missing one of the following while loading a saved scene: sceneId, sceneName, scene, lights, models'
+    );
+  }
+
+  // Initialize state
+  const [sceneId] = useState(loadedState?.sceneId || uuidv4());
+  const [sceneName, setSceneName] = useState(loadedState?.sceneName || `a masterpiece`);
+  const [scene, setScene] = useState(loadedState?.scene || initialScene);
+  const [lights, setLights] = useState(loadedState?.lights || initialLights);
+  const [models, setModels] = useState(loadedState?.models || initialModels);
 
   /**
    * This can be improved with a custom hook or something!
@@ -42,8 +55,6 @@ const SceneCreator = () => {
   const controlPanelContainerRef = useRef(null);
 
   useEffect(() => {
-    console.log('here');
-    console.log(controlPanelContainerRef.current);
     controlPanelContainerRef.current.scrollLeft = 100000;
   }, [addedPanel]);
 

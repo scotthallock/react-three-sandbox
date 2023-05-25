@@ -1,8 +1,7 @@
 import { Link } from 'react-router-dom';
 import Logo from './Logo';
-import NavButton from './NavButton';
+import ControlButton from './ControlButton';
 import NavDropdown from './NavDropdown';
-
 import { useAuth } from './AuthContext';
 import { LIGHT, GEOMETRY } from '../../utils/types';
 import { saveScene } from '../actions/actions';
@@ -20,9 +19,8 @@ const SceneCreatorNavBar = (props) => {
   const { addNewModel, sceneId, sceneName, changeSceneName, scene, lights, models } = props;
   const {
     auth: [user, setUser],
+    logout,
   } = useAuth();
-
-  console.log(sceneId);
 
   const handleSaveScene = async () => {
     if (!user) return alert('You must be logged in to save a scene');
@@ -40,7 +38,7 @@ const SceneCreatorNavBar = (props) => {
 
   return (
     <>
-      <nav className="m-4 flex flex-row items-center gap-4 text-gray-400 font-mono font-medium">
+      <nav className="m-4 flex flex-row items-center gap-4 font-mono font-medium">
         <Link to="/">
           <Logo />
         </Link>
@@ -65,7 +63,7 @@ const SceneCreatorNavBar = (props) => {
               </button>
             </div>
           </div>
-          <span className="text-[11px]">{user?.username || 'anonymous user'}</span>
+          <span className="text-gray-400 text-[11px]">{user?.username || 'anonymous user'}</span>
         </div>
         {user?.username ? (
           <>
@@ -73,7 +71,7 @@ const SceneCreatorNavBar = (props) => {
               <div className="hover:text-emerald-500">{user.username}</div>
             </Link>
             <button
-              onClick={() => setUser(null)}
+              onClick={logout}
               className="bg-zinc-900 shadow-900 rounded-[10px] p-3 hover:text-emerald-500"
             >
               Log Out
@@ -95,13 +93,12 @@ const SceneCreatorNavBar = (props) => {
         )}
       </nav>
       <div className="m-4 flex-wrap text-[11px] flex flex-row gap-[10px]">
-        <NavButton text="save" handleClick={handleSaveScene} />
-        <NavButton text="export" handleClick={() => console.log('clicked export')} />
+        <ControlButton text="save" handleClick={handleSaveScene} />
         <NavDropdown text="+ light">
           {lightOptions.map((option, i) => (
             <button
               key={`light-${i}`}
-              className="hover:text-emerald-500 whitespace-nowrap text-right"
+              className="hover:text-emerald-500 whitespace-nowrap text-left"
               onClick={() => console.log('You clicked', option)}
             >
               {option}
@@ -112,7 +109,7 @@ const SceneCreatorNavBar = (props) => {
           {geometryOptions.map((geometry, i) => (
             <button
               key={`geometry-${i}`}
-              className="hover:text-emerald-500 whitespace-nowrap text-right"
+              className="hover:text-emerald-500 whitespace-nowrap text-left"
               onClick={() => addNewModel(geometry)}
             >
               {geometry}

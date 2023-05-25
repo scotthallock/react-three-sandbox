@@ -1,11 +1,21 @@
 import { createContext, useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const auth = useState({ username: 'scotth' });
+  const auth = useState(null);
 
-  return <AuthContext.Provider value={{ auth }}>{children}</AuthContext.Provider>;
+  const navigate = useNavigate();
+
+  const logout = () => {
+    const [user, setUser] = auth;
+    setUser(null);
+    navigate('/');
+    console.log('logged out');
+  };
+
+  return <AuthContext.Provider value={{ auth, logout }}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {

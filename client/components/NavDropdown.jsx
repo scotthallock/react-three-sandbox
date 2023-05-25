@@ -1,5 +1,6 @@
 import { useRef, useEffect } from 'react';
 import { useTransition } from 'react-transition-state';
+import ControlButton from './ControlButton';
 
 const NavDropdown = ({ children, text }) => {
   const ref = useRef();
@@ -27,12 +28,7 @@ const NavDropdown = ({ children, text }) => {
 
   return (
     <div ref={ref} className="relative">
-      <button
-        className="z-50 h-[24px] bg-zinc-900 text-gray-200 hover:text-emerald-500 rounded-[10px] px-4 whitespace-nowrap shadow-md"
-        onClick={() => toggle()}
-      >
-        {text}
-      </button>
+      <ControlButton text={text} handleClick={toggle} />
       {children && isMounted && (
         /* This div is the dropdown menu */
         <div
@@ -40,7 +36,7 @@ const NavDropdown = ({ children, text }) => {
             status === 'preEnter' || status === 'exiting'
               ? 'transform -translate-y-2 opacity-0 pointer-events-none'
               : ''
-          } p-[10px] top-[30px] right-0 z-30 bg-zinc-900 text-gray-200 rounded-[10px] shadow-xl flex flex-col align-left gap-[6px]`}
+          } p-[10px] top-[30px] left-0 z-30 bg-zinc-900 text-gray-200 rounded-[10px] shadow-xl flex flex-col gap-[6px]`}
         >
           {children}
         </div>
