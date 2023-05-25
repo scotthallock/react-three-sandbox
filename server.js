@@ -19,9 +19,10 @@ if (!MONGO_URI) {
 }
 
 // if the /uploads folder doesn't exist, make it
-const UPLOADS_DIRECTORY = path.join(__dirname + '/upload');
+const UPLOADS_DIRECTORY = path.join(__dirname + '/uploads');
 if (!fs.existsSync(UPLOADS_DIRECTORY)) {
   fs.mkdirSync(UPLOADS_DIRECTORY);
+  console.log('✅ Created the /uploads folder');
 }
 
 mongoose
