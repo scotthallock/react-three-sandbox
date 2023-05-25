@@ -1,5 +1,6 @@
 require('dotenv').config();
 const path = require('path');
+const fs = require('fs');
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
@@ -15,6 +16,12 @@ const { PORT = 3000, MONGO_URI } = process.env;
 
 if (!MONGO_URI) {
   throw new Error('MONGO_URI environment variable is not defined. Cannot connect to database.');
+}
+
+// if the /uploads folder doesn't exist, make it
+const UPLOADS_DIRECTORY = path.join(__dirname + '/upload');
+if (!fs.existsSync(UPLOADS_DIRECTORY)) {
+  fs.mkdirSync(UPLOADS_DIRECTORY);
 }
 
 mongoose
