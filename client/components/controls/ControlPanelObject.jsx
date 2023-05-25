@@ -79,7 +79,7 @@ const ControlPanelObject = (props) => {
         />
       )}
 
-      <InputCheckbox label="wireframe" handleChange={(e) => console.log('CHANGE WIREFRAME')} />
+      {/* <InputCheckbox label="wireframe" handleChange={(e) => console.log('CHANGE WIREFRAME')} /> */}
 
       <InputSelect
         label="material"
