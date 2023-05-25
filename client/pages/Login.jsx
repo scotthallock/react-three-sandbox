@@ -1,11 +1,23 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../components/Logo';
 import { login } from '../actions/actions';
 
 const Login = () => {
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
+
+  const handleLogin = async () => {
+    const data = await login({ usernameOrEmail, password });
+    console.log(data);
+    if (data.err) {
+      setErrorMessage(data.err.message);
+    } else {
+      navigate(`/user/${data.username}`);
+    }
+  };
 
   return (
     <main className="m-4 flex flex-col gap-4">
@@ -49,11 +61,10 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
 
+            {errorMessage && <span className="text-red-400 mb-4">{errorMessage}</span>}
+
             <div className="flex justify-center">
-              <button
-                className="hover:text-emerald-500"
-                onClick={() => login({ usernameOrEmail, password })}
-              >
+              <button className="hover:text-emerald-500" onClick={handleLogin}>
                 Submit
               </button>
             </div>

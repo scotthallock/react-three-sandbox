@@ -26,8 +26,24 @@ const SceneCreator = () => {
   const [lights, setLights] = useState(initialLights);
   const [models, setModels] = useState(initialModels);
 
+  /**
+   * This can be improved with a custom hook or something!
+   * Currently, when the user adds a new light or model,
+   * This state is updated, which will trigger a useEffect that
+   * scrolls to the right of the control panel container
+   * to reveal to panel that was just added.
+   */
+  const [addedPanel, setAddedPanel] = useState(0);
+  const controlPanelContainerRef = useRef(null);
+
+  useEffect(() => {
+    console.log('here');
+    console.log(controlPanelContainerRef.current);
+    controlPanelContainerRef.current.scrollLeft = 100000;
+  }, [addedPanel]);
+
   const canvasRef = useRef(null);
-  const wrapperRef = useRef(null);
+  const wrapperRef = useRef(null); // not currently used
 
   const handleSceneAction = (action, value, argNo) => {
     const newScene = structuredClone(scene);
@@ -119,6 +135,7 @@ const SceneCreator = () => {
     const newUuid = uuidv4();
     newObject.uuid = newUuid;
     setModels({ ...models, [newUuid]: newObject });
+    setAddedPanel(Math.random()); // <---- NEEDS IMPROVEMENT
   };
 
   const handleAction = (action, uuid, value, argNo) => {
@@ -136,6 +153,7 @@ const SceneCreator = () => {
         duplicate.position[AXIS.X] += 0.5;
         duplicate.position[AXIS.Z] += 0.5;
         newModels[newUuid] = duplicate;
+        setAddedPanel(Math.random()); // <---- NEEDS IMPROVEMENT
         break;
       }
       case ACTION.CHANGE_NAME:
@@ -223,6 +241,7 @@ const SceneCreator = () => {
       </div>
 
       <ControlPanelContainer
+        ref={controlPanelContainerRef}
         scene={scene}
         handleSceneAction={handleSceneAction}
         lights={lights}

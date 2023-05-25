@@ -50,10 +50,12 @@ sceneController.saveScene = async (req, res) => {
       savedScene.image = image;
       savedScene.createdAt = Date.now();
       await savedScene.save();
+      console.log('UPDATED A SCENE');
       return res.status(201).json({ message: 'successfully updated scene', scene: savedScene });
     } else {
       // Save a new scene
       const newScene = await Scene.create({ sceneId, scene, lights, models });
+      console.log('SAVED A NEW SCENE');
       return res.status(200).json({ message: 'successfully saved new scene', scene: newScene });
     }
   } catch (err) {

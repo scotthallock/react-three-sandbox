@@ -66,12 +66,10 @@ export const signup = async ({ username, email, password }) => {
       body: JSON.stringify({
         username,
         email,
-        password: atob(password),
+        password: btoa(password),
       }),
     });
-    const data = await response.json();
-    console.log(data);
-    if (data.err) return data.err.message;
+    return await response.json();
   } catch (err) {
     console.error(err);
   }
@@ -84,12 +82,10 @@ export const login = async ({ usernameOrEmail, password }) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         usernameOrEmail,
-        password: atob(password),
+        password: btoa(password),
       }),
     });
-    const data = await response.json();
-    console.log(data);
-    if (data.err) return data.err.message;
+    return await response.json();
   } catch (err) {
     console.error(err);
   }

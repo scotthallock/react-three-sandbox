@@ -1,46 +1,54 @@
+import { useAuth } from '../components/AuthContext';
 import { Link } from 'react-router-dom';
 import Logo from '../components/Logo';
 import { Canvas } from '@react-three/fiber';
-import {
-  Stage,
-  Float,
-  OrbitControls,
-  Instances,
-  Instance,
-  Billboard,
-  Text,
-  Text3D,
-  Center,
-} from '@react-three/drei';
+import { Stage, Float, OrbitControls, Billboard, Text3D, Center } from '@react-three/drei';
 import interFont from '../assets/Inter_Regular.json';
 
 const Landing = () => {
+  const {
+    auth: [user, setUser],
+  } = useAuth();
+
   return (
     <main className="m-4 flex flex-col gap-4">
       <div className="flex gap-4 items-center">
         <Logo />
-        <Link to="/signup" className="ml-auto">
-          <div className="bg-zinc-900 shadow-900 rounded-[10px] p-3 hover:text-emerald-500">
-            Sign Up
-          </div>
-        </Link>
-        <Link to="/login">
-          <div className="bg-zinc-900 shadow-900 rounded-[10px] p-3 hover:text-emerald-500">
-            Login
-          </div>
-        </Link>
+        {user?.username ? (
+          <>
+            <div className="ml-auto">{user.username}</div>
+            <button
+              onClick={() => setUser(null)}
+              className="bg-zinc-900 shadow-900 rounded-[10px] p-3 hover:text-emerald-500"
+            >
+              Log Out
+            </button>
+          </>
+        ) : (
+          <>
+            <Link to="/signup" className="ml-auto">
+              <div className="bg-zinc-900 shadow-900 rounded-[10px] p-3 hover:text-emerald-500">
+                Sign Up
+              </div>
+            </Link>
+            <Link to="/login">
+              <div className="bg-zinc-900 shadow-900 rounded-[10px] p-3 hover:text-emerald-500">
+                Login
+              </div>
+            </Link>
+          </>
+        )}
       </div>
 
       <div className="relative">
         <div id="canvas-container" className=" aspect-1.91/1 w-full">
-          <Canvas camera={{ position: [0, 4, 10], fov: 50 }}>
+          <Canvas camera={{ position: [0, 10, 5], fov: 50 }}>
             <Stage adjustCamera={false} intensity={0.5} shadows="contact" environment="city">
-              <directionalLight position={[2.5, 8, 5]} intensity={1.5} />
-
-              <Billboard position={[0, 3.5, 0]}>
+              <directionalLight position={[2.5, 8, 5]} intensity={1.5} castShadow />
+              <Billboard position={[0, 3, 0]}>
                 <Center>
                   <Text3D
-                    rotation={[-0.3, 0, 0]}
+                    rotation={[0.3, 0, 0]}
                     font={interFont}
                     lineHeight={0.7}
                     curveSegments={12}
@@ -49,6 +57,7 @@ const Landing = () => {
                     bevelSize={0.01}
                     bevelOffset={0}
                     bevelSegments={5}
+                    size={0.75}
                   >
                     make a scene
                     <meshPhongMaterial color="#10b981" />
@@ -84,7 +93,13 @@ const Landing = () => {
                 </mesh>
               </Float>
             </Stage>
-            <OrbitControls makeDefault autoRotate autoRotateSpeed={1} />
+            <OrbitControls
+              makeDefault
+              autoRotate
+              autoRotateSpeed={1}
+              enablePan={false}
+              enableZoom={false}
+            />
           </Canvas>
         </div>
         <div className="flex align-center justify-center">

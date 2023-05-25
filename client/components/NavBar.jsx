@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import Logo from './Logo';
 import NavButton from './NavButton';
 import NavDropdown from './NavDropdown';
@@ -19,7 +20,9 @@ const NavBar = ({ addNewModel, sceneId, scene, lights, models }) => {
   console.log(models);
   return (
     <nav className="m-4 flex flex-row items-center gap-4 text-gray-400 font-mono font-medium">
-      <Logo />
+      <Link to="/">
+        <Logo />
+      </Link>
       <div className="flex flex-col">
         <div>
           <div className="flex flex-row gap-4">

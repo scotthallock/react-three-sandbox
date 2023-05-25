@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../components/Logo';
 import { signup } from '../actions/actions';
 
@@ -7,6 +7,19 @@ const Signup = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
+
+  const handleSignup = async () => {
+    const data = await signup({ username, email, password });
+    console.log(data);
+    if (data.err) {
+      console.log(data);
+      setErrorMessage(data.err.message);
+    } else {
+      navigate(`/user/${data.username}`);
+    }
+  };
 
   return (
     <main className="m-4 flex flex-col gap-4">
@@ -61,11 +74,10 @@ const Signup = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
 
+            {errorMessage && <span className="text-red-400 text-xs mb-4">{errorMessage}</span>}
+
             <div className="flex justify-center">
-              <button
-                className="hover:text-emerald-500"
-                onClick={() => signup({ username, email, password })}
-              >
+              <button className="hover:text-emerald-500" onClick={handleSignup}>
                 Submit
               </button>
             </div>
