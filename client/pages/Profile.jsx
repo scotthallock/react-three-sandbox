@@ -1,8 +1,8 @@
 import { useParams, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import Logo from '../components/Logo';
-
-import { sayHello, getScenesByUser } from '../actions/actions';
+import SceneCard from '../components/SceneCard';
+import { getScenesByUser } from '../actions/actions';
 
 const Profile = () => {
   const { username } = useParams();
@@ -31,7 +31,7 @@ const Profile = () => {
         </Link>
       </div>
 
-      <div className="flex">
+      <div className="flex justify-center">
         <Link to="/scene">
           <div className="rounded-[12px] p-[2px] bg-gradient-to-br from-blue-400 via-cyan-400 to-emerald-500">
             <div className="rounded-[10px] bg-zinc-900 shadow-900  p-3 hover:text-emerald-500">
@@ -42,10 +42,16 @@ const Profile = () => {
       </div>
 
       <h1 className="text-xl tracking-widest [text-shadow:_2px_4px_3px_rgb(0_0_0_/_40%)]">
-        SAVED SCENES
+        {scenes ? `SAVED SCENES (${scenes.length})` : 'SAVED SCENES'}
       </h1>
 
-      {scenes > 0 && <pre>{scenes}</pre>}
+      {scenes && (
+        <div className="flex flex-col-reverse gap-4 shadow-md">
+          {scenes.map((props, i) => (
+            <SceneCard {...props} />
+          ))}
+        </div>
+      )}
     </main>
   );
 };

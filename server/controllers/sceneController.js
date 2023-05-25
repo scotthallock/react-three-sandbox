@@ -5,11 +5,12 @@ const Scene = require('../models/Scene');
 const sceneController = {};
 
 sceneController.getScenes = async (req, res, next) => {
-  console.log('get all scenes');
-  console.log('are there query params?');
-  console.log(req.query);
+  const { username } = req.query;
   try {
-    const scenes = await Scene.find({ author: req.query.usernae });
+    if (!username) {
+      throw new Error('Missing `username` query param in request');
+    }
+    const scenes = await Scene.find({ author: req.query.username });
     res.locals.scenes = scenes;
     return next();
   } catch (err) {
@@ -41,6 +42,7 @@ sceneController.saveScene = async (req, res, next) => {
     // console.log('saving the image to a temporary file....');
     // await fsp.writeFile(path.join(__dirname, '../../files/image.txt'), image);
 
+    console.log(sceneId);
     const savedScene = await Scene.findOne({ sceneId });
 
     if (savedScene) {

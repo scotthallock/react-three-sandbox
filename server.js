@@ -41,7 +41,7 @@ app.get('/api/scene', sceneController.getScenes, (req, res) => res.json(res.loca
 app.get('/api/scene/:id', sceneController.getSceneById, (req, res) => res.json(res.locals.scene));
 
 app.post('/api/scene', sceneController.saveScene, (req, res) =>
-  res.status(201).json({ message: 'successfully updated scene', sceneId })
+  res.status(201).json({ message: 'successfully updated scene', sceneId: res.locals.sceneId })
 );
 
 app.post(
