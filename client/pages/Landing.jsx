@@ -50,7 +50,7 @@ const Landing = () => {
             <Float speed={1} rotationIntensity={1} floatingRange={[1, 1.5]}>
               <Center position={[-2, 0, 0]}>
                 <Text3D
-                  rotation={[1.57, 0, 0]}
+                  rotation={[-1.57, 0, 0]}
                   font={interFont}
                   height={0.5}
                   lineHeight={0.7}
@@ -70,7 +70,7 @@ const Landing = () => {
             <Float speed={1} rotationIntensity={1} floatingRange={[1, 1.5]}>
               <Center position={[-0.65, 0, -0.75]}>
                 <Text3D
-                  rotation={[1.57, 0, 0]}
+                  rotation={[-1.57, 0, 0]}
                   font={interFont}
                   height={0.5}
                   lineHeight={0.7}
@@ -90,7 +90,7 @@ const Landing = () => {
             <Float speed={1} rotationIntensity={1} floatingRange={[1, 1.5]}>
               <Center position={[0.65, 0, 0.75]}>
                 <Text3D
-                  rotation={[1.57, 0, 0]}
+                  rotation={[-1.57, 0, 0]}
                   font={interFont}
                   height={0.5}
                   lineHeight={0.7}
@@ -110,7 +110,7 @@ const Landing = () => {
             <Float speed={1} rotationIntensity={1} floatingRange={[1, 1.5]}>
               <Center position={[2, 0, 0]}>
                 <Text3D
-                  rotation={[1.57, 0, 0]}
+                  rotation={[-1.57, 0, 0]}
                   font={interFont}
                   height={0.5}
                   lineHeight={0.7}
@@ -146,6 +146,11 @@ const Landing = () => {
             </div>
           </div>
         </Link>
+      </div>
+
+      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 p-4 text-gray-400 text-xs text-center">
+        <p>work in progress</p>
+        <p>made with &hearts; by scott hallock</p>
       </div>
     </main>
   );

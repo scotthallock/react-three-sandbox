@@ -65,7 +65,7 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
 
-            {errorMessage && <span className="text-red-400 mb-4">{errorMessage}</span>}
+            {errorMessage && <span className="text-red-400 text-xs mb-4">{errorMessage}</span>}
 
             <div className="flex justify-center">
               <button className="hover:text-emerald-500" onClick={handleLogin}>
