@@ -16,7 +16,9 @@ const geometryOptions = [
 ];
 
 const SceneCreatorNavBar = (props) => {
-  const { addNewModel, sceneId, sceneName, changeSceneName, scene, lights, models } = props;
+  const { addNewModel, addNewLight, sceneId, sceneName, changeSceneName, scene, lights, models } =
+    props;
+
   const {
     auth: [user, setUser],
     logout,
@@ -47,6 +49,7 @@ const SceneCreatorNavBar = (props) => {
             <div className="flex flex-row gap-4">
               <span
                 contentEditable
+                suppressContentEditableWarning
                 className="text-gray-200 bg-transparent outline-none "
                 onChange={changeSceneName}
               >
@@ -96,13 +99,13 @@ const SceneCreatorNavBar = (props) => {
       <div className="m-4 flex-wrap text-[11px] flex flex-row gap-[10px]">
         <ControlButton text="save" handleClick={handleSaveScene} />
         <NavDropdown text="+ light">
-          {lightOptions.map((option, i) => (
+          {lightOptions.map((light, i) => (
             <button
               key={`light-${i}`}
               className="hover:text-emerald-500 whitespace-nowrap text-left"
-              onClick={() => console.log('You clicked', option)}
+              onClick={() => addNewLight(light)}
             >
-              {option}
+              {light}
             </button>
           ))}
         </NavDropdown>

@@ -14,6 +14,7 @@ import initialScene from '../../utils/initialScene';
 import initialLights from '../../utils/initialLights';
 import initialModels from '../../utils/initialModels';
 import defaultModels from '../../utils/defaultModels';
+import defaultLights from '../../utils/defaultLights';
 import { AXIS, GEOMETRY, MATERIAL, ACTION, SCENE_ACTION, LIGHT_ACTION } from '../../utils/types';
 
 const SceneCreator = () => {
@@ -133,12 +134,24 @@ const SceneCreator = () => {
   };
 
   const addNewModel = (geometry) => {
-    const newObject = defaultModels[geometry];
-    if (!newObject) throw new Error(`No defaults are configured for ${geometry}`);
+    const newModel = defaultModels[geometry];
+    console.log(geometry);
+    if (!newModel) throw new Error(`No defaults are configured for ${geometry}`);
     const newUuid = uuidv4();
-    newObject.uuid = newUuid;
-    setModels({ ...models, [newUuid]: newObject });
+    newModel.uuid = newUuid;
+    console.log(newUuid);
+    setModels({ ...models, [newUuid]: newModel });
     setAddedPanel(Math.random()); // <---- NEEDS IMPROVEMENT
+  };
+
+  const addNewLight = (light) => {
+    const newLight = defaultLights[light];
+    console.log(light);
+    if (!newLight) throw new Error(`No defaults are configured for ${light}`);
+    const newUuid = uuidv4();
+    newLight.uuid = newUuid;
+    console.log(newUuid);
+    setLights({ ...lights, [newUuid]: newLight });
   };
 
   const handleAction = (action, uuid, value, argNo) => {
@@ -212,6 +225,7 @@ const SceneCreator = () => {
     <main>
       <SceneCreatorNavBar
         addNewModel={addNewModel}
+        addNewLight={addNewLight}
         sceneId={sceneId}
         sceneName={sceneName}
         changeSceneName={(e) => setSceneName(e.target.value)}

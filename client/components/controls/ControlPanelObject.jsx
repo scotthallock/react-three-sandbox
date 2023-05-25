@@ -22,6 +22,15 @@ const ControlPanelObject = (props) => {
     handleAction,
   } = props;
 
+  let symbols = ['', '', ''];
+  if (geometry === GEOMETRY.Box) {
+    symbols = ['w', 'h', 'd'];
+  } else if (geometry === GEOMETRY.Sphere) {
+    symbols = ['r', 'w', 'h'];
+  } else if (geometry === GEOMETRY.Cone) {
+    symbols = ['r', 'h', 'r'];
+  }
+
   return (
     <ControlPanel
       name={name}
@@ -56,7 +65,19 @@ const ControlPanelObject = (props) => {
             (e) => handleAction(ACTION.CHANGE_ARGS, uuid, e.target.value, 2),
           ]}
         />
-      ) : null}
+      ) : (
+        <InputNumberMultiple
+          label="args"
+          step="0.1"
+          symbols={symbols}
+          values={args}
+          handleChanges={[
+            (e) => handleAction(ACTION.CHANGE_ARGS, uuid, e.target.value, 0),
+            (e) => handleAction(ACTION.CHANGE_ARGS, uuid, e.target.value, 1),
+            (e) => handleAction(ACTION.CHANGE_ARGS, uuid, e.target.value, 2),
+          ]}
+        />
+      )}
 
       <InputCheckbox label="wireframe" handleChange={(e) => console.log('CHANGE WIREFRAME')} />
 

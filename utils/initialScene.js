@@ -1,5 +1,5 @@
 const initialScene = {
-  backgroundColor: '#082f49',
+  backgroundColor: '#030712',
   showGizmo: false,
   showGrid: true,
   gridSize: [10, 6],
