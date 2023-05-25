@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../components/Logo';
 import { signup } from '../actions/actions';
+import { useAuth } from '../components/AuthContext';
 
 const Signup = () => {
   const [username, setUsername] = useState('');
@@ -10,15 +11,17 @@ const Signup = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
+  const {
+    auth: [user, setUser],
+  } = useAuth();
+
+  if (user) navigate(`/user/${user.username}`);
+
   const handleSignup = async () => {
     const data = await signup({ username, email, password });
     console.log(data);
-    if (data.err) {
-      console.log(data);
-      setErrorMessage(data.err.message);
-    } else {
-      navigate(`/user/${data.username}`);
-    }
+    if (data.err) return setErrorMessage(data.err.message);
+    if (data.username) return setUser({ username: data.username });
   };
 
   return (

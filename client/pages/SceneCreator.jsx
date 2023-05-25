@@ -1,14 +1,15 @@
 import * as THREE from 'three';
 import { v4 as uuidv4 } from 'uuid';
+import { useAuth } from '../components/AuthContext';
 import { useState, useRef, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, GizmoHelper, GizmoViewport, useHelper } from '@react-three/drei';
+import { OrbitControls, GizmoHelper, GizmoViewport } from '@react-three/drei';
 
 import GridModel from '../components/models/GridModel';
 import LightCollection from '../components/lights/LightCollection';
 import ModelCollection from '../components/models/ModelCollection';
 
-import NavBar from '../components/NavBar';
+import SceneCreatorNavBar from '../components/SceneCreatorNavBar';
 import ControlPanelContainer from '../components/controls/ControlPanelContainer';
 
 import initialScene from '../../utils/initialScene';
@@ -21,6 +22,9 @@ import { getAllScenes, getSceneById } from '../actions/actions';
 import { AXIS, GEOMETRY, MATERIAL, ACTION, SCENE_ACTION, LIGHT_ACTION } from '../../utils/types';
 
 const SceneCreator = () => {
+  const {
+    auth: [user, setUser],
+  } = useAuth();
   const [sceneId] = useState(uuidv4());
   const [scene, setScene] = useState(initialScene);
   const [lights, setLights] = useState(initialLights);
@@ -207,7 +211,7 @@ const SceneCreator = () => {
 
   return (
     <main>
-      <NavBar
+      <SceneCreatorNavBar
         addNewModel={addNewModel}
         sceneId={sceneId}
         scene={scene}
